@@ -306,6 +306,10 @@
       <button class="btn ghost" id="reset-btn">Reset to sample data</button>
       <button class="btn ghost" id="load-btn">Load CSV export</button>
       <input type="file" id="csv-input" accept=".csv">
+      <label for="budget-version-input" style="font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--steel); display:flex; align-items:center; gap:5px;">
+        Version
+        <input type="number" id="budget-version-input" value="1" min="1" style="width:44px; font-family:'IBM Plex Mono', monospace; font-size:11.5px; border:1px solid var(--rule-strong); padding:4px 5px; background:var(--surface); color:var(--ink);">
+      </label>
       <button class="btn adaptive" id="adaptive-export-btn">Adaptive Export</button>
       <button class="btn ghost" id="download-adjusted-btn">Download Adjusted Data</button>
     </div>
@@ -452,7 +456,7 @@ const ASSET_CLASS_CROSSWALK = {"Sitework||15": {"code": "Building - 15 yr", "mon
 
 // Fexa Store Identifier -> Adaptive Level Code (Code and Name are identical in Adaptive's Keys tab).
 // Most pass through unchanged; a handful (distribution centers, regions, a couple of stores) differ.
-const LEVEL_CODE_MAP = {"001 Galveston": "001 Galveston", "003 Brazoria": "003 Brazoria", "004 League City": "004 League City", "006 Bastrop": "006 Bastrop", "007 Brownwood": "007 Brownwood", "008 Stephenville": "008 Stephenville", "010 Belton": "010 Belton", "011 South Austin": "011 South Austin", "012 Weimar": "012 Weimar", "013 Richwood": "013 Richwood", "015 Harlingen": "015 Harlingen", "016 New Braunfels": "016 New Braunfels", "017 N Corpus Christi": "017 N Corpus Christi", "018 Abilene": "018 Abilene", "019 Midland": "019 Midland", "020 Victoria": "020 Victoria", "022 Greenville": "022 Greenville", "024 Pasadena": "024 Pasadena", "025 NW San Antonio": "025 NW San Antonio", "027 SE San Antonio": "027 SE San Antonio", "028 Baytown": "028 Baytown", "029 S Corpus Christi": "029 S Corpus Christi", "030 San Angelo": "030 San Angelo", "032 Palestine": "032 Palestine", "033 Pharr": "033 Pharr", "034 Bryan": "034 Bryan", "035 Odessa": "035 Odessa", "036 Lufkin": "036 Lufkin", "037 Brownsville": "037 Brownsville", "038 Rosenberg": "038 Rosenberg", "039 Longview": "039 Longview", "040 Beeville": "040 Beeville", "041 Laredo": "041 Laredo", "042 Las Cruces": "042 Las Cruces", "043 Huntsville": "043 Huntsville", "044 Kerrville": "044 Kerrville", "047 Waco": "047 Waco", "049 Tyler": "049 Tyler", "050 SC San Antonio": "050 SC San Antonio", "052 Cleburne": "052 Cleburne", "053 Taylor": "053 Taylor", "055 Georgetown": "055 Georgetown", "057 Tomball": "057 Tomball", "058 Gonzales": "058 Gonzales", "059 Corsicana": "059 Corsicana", "060 Brenham": "060 Brenham", "061 Mt. Pleasant": "061 Mt. Pleasant", "062 Austin Manchaca": "062 Austin Manchaca", "063 Gainesville": "063 Gainesville", "064 Orange": "064 Orange", "066 Alice": "066 Alice", "067 Terrell": "067 Terrell", "068 Plainview": "068 Plainview", "069 Austin 290 West": "069 Austin 290 West", "070 San Marcos": "070 San Marcos", "071 Nacogdoches": "071 Nacogdoches", "072 Paris": "072 Paris", "074 Bee Cave": "074 Bee Cave", "075 El Paso": "075 El Paso HP", "077 Searcy": "077 Searcy", "082 Ardmore": "082 Ardmore", "083 Duncan": "083 Duncan", "084 Hobbs": "084 Hobbs", "085 Roswell": "085 Roswell", "086 Alpine": "086 Alpine", "087 Fort Stockton": "087 Fort Stockton", "088 Del Rio": "088 Del Rio", "089 Mission": "089 Mission", "090 Okmulgee": "090 Okmulgee", "091 Carlsbad": "091 Carlsbad", "093 Weslaco": "093 Weslaco", "094 Vicksburg": "094 Vicksburg", "096 El Campo": "096 El Campo", "097 Eagle Pass": "097 Eagle Pass", "098 Cleveland": "098 Cleveland", "100 Edinburg": "100 Edinburg", "101 Universal City": "101 Universal City", "103 San Benito": "103 San Benito", "107 Laurel": "107 Laurel", "108 Rio Grande City": "108 Rio Grande City", "109 Aransas Pass": "109 Aransas Pass", "111 Floresville": "111 Floresville", "112 Dayton": "112 Dayton", "113 Montgomery": "113 Montgomery", "114 Alvin": "114 Alvin", "115 Midlothian": "115 Midlothian", "116 Bay City": "116 Bay City", "117 Liberty Hill": "117 Liberty Hill", "118 Spicewood": "118 Spicewood", "119 Lubbock": "119 Lubbock", "120 Lockhart": "120 Lockhart", "121 New Caney": "121 New Caney", "122 Canyon Lake": "122 Canyon Lake", "353 Dayton Distribution": "353 Dayton Distribution", "355 Pharr Central Delivery": "355 Centralized Delivery", "355 Pharr Reload": "355 Pharr - Reload", "356 Midland Distribution Center": "356 Midland - DC", "359 Burnet Reload": "359 Burnet Reload", "387 Window Delivery": "387 Region 7&8 Window Service", "450 McCoys Millworks": "450-New Braunfels Millwork", "479 Rebar Bender": "479 Burnet Manufacturing", "489 EWP Program": "489 Burnet EWP", "508 The Retreat": "508 Retreat", "730 Store Development": "730 Store Development Dept", "735 Fleet": "735 Fleet", "750 Real Estate": "750 Real Estate Division", "761 Region 1": "761 Region 01", "762 Region 2": "762 Region 02", "763 Region 3": "763 Region 03", "764 Region 4": "764 Region 04", "765 Region 5": "765 Region 05", "766 Region 6": "766 Region 06", "767 Region 7": "767 Region 07", "768 Region 8": "768 Region 08", "900 Corporate": "900 Corporate Department", "950 Rio Truss": "950 Rio Truss", "123 Reno": "123 Reno"};
+const LEVEL_CODE_MAP = {"001 Galveston": "001 Galveston", "003 Brazoria": "003 Brazoria", "004 League City": "004 League City", "006 Bastrop": "006 Bastrop", "007 Brownwood": "007 Brownwood", "008 Stephenville": "008 Stephenville", "010 Belton": "010 Belton", "011 South Austin": "011 South Austin", "012 Weimar": "012 Weimar", "013 Richwood": "013 Richwood", "015 Harlingen": "015 Harlingen", "016 New Braunfels": "016 New Braunfels", "017 N Corpus Christi": "017 N Corpus Christi", "018 Abilene": "018 Abilene", "019 Midland": "019 Midland", "020 Victoria": "020 Victoria", "022 Greenville": "022 Greenville", "024 Pasadena": "024 Pasadena", "025 NW San Antonio": "025 NW San Antonio", "027 SE San Antonio": "027 SE San Antonio", "028 Baytown": "028 Baytown", "029 S Corpus Christi": "029 S Corpus Christi", "030 San Angelo": "030 San Angelo", "032 Palestine": "032 Palestine", "033 Pharr": "033 Pharr", "034 Bryan": "034 Bryan", "035 Odessa": "035 Odessa", "036 Lufkin": "036 Lufkin", "037 Brownsville": "037 Brownsville", "038 Rosenberg": "038 Rosenberg", "039 Longview": "039 Longview", "040 Beeville": "040 Beeville", "041 Laredo": "041 Laredo", "042 Las Cruces": "042 Las Cruces", "043 Huntsville": "043 Huntsville", "044 Kerrville": "044 Kerrville", "047 Waco": "047 Waco", "049 Tyler": "049 Tyler", "050 SC San Antonio": "050 SC San Antonio", "052 Cleburne": "052 Cleburne", "053 Taylor": "053 Taylor", "055 Georgetown": "055 Georgetown", "057 Tomball": "057 Tomball", "058 Gonzales": "058 Gonzales", "059 Corsicana": "059 Corsicana", "060 Brenham": "060 Brenham", "061 Mt. Pleasant": "061 Mt. Pleasant", "062 Austin Manchaca": "062 Austin Manchaca", "063 Gainesville": "063 Gainesville", "064 Orange": "064 Orange", "066 Alice": "066 Alice", "067 Terrell": "067 Terrell", "068 Plainview": "068 Plainview", "069 Austin 290 West": "069 Austin 290 West", "070 San Marcos": "070 San Marcos", "071 Nacogdoches": "071 Nacogdoches", "072 Paris": "072 Paris", "074 Bee Cave": "074 Bee Cave", "075 El Paso": "075 El Paso HP", "077 Searcy": "077 Searcy", "082 Ardmore": "082 Ardmore", "083 Duncan": "083 Duncan", "084 Hobbs": "084 Hobbs", "085 Roswell": "085 Roswell", "086 Alpine": "086 Alpine", "087 Fort Stockton": "087 Fort Stockton", "088 Del Rio": "088 Del Rio", "089 Mission": "089 Mission", "090 Okmulgee": "090 Okmulgee", "091 Carlsbad": "091 Carlsbad", "093 Weslaco": "093 Weslaco", "094 Vicksburg": "094 Vicksburg", "096 El Campo": "096 El Campo", "097 Eagle Pass": "097 Eagle Pass", "098 Cleveland": "098 Cleveland", "100 Edinburg": "100 Edinburg", "101 Universal City": "101 Universal City", "103 San Benito": "103 San Benito", "107 Laurel": "107 Laurel", "108 Rio Grande City": "108 Rio Grande City", "109 Aransas Pass": "109 Aransas Pass", "111 Floresville": "111 Floresville", "112 Dayton": "112 Dayton", "113 Montgomery": "113 Montgomery", "114 Alvin": "114 Alvin", "115 Midlothian": "115 Midlothian", "116 Bay City": "116 Bay City", "117 Liberty Hill": "117 Liberty Hill", "118 Spicewood": "118 Spicewood", "119 Lubbock": "119 Lubbock", "120 Lockhart": "120 Lockhart", "121 New Caney": "121 New Caney", "122 Canyon Lake": "122 Canyon Lake", "123 Reno": "750 Real Estate Division", "353 Dayton Distribution": "353 Dayton Distribution", "355 Pharr Central Delivery": "355 Centralized Delivery", "355 Pharr Reload": "355 Pharr - Reload", "356 Midland Distribution Center": "356 Midland - DC", "359 Burnet Reload": "359 Burnet Reload", "387 Window Delivery": "387 Region 7&8 Window Service", "450 McCoys Millworks": "450-New Braunfels Millwork", "479 Rebar Bender": "479 Burnet Manufacturing", "489 EWP Program": "489 Burnet EWP", "508 The Retreat": "508 Retreat", "730 Store Development": "730 Store Development Dept", "735 Fleet": "735 Fleet", "750 Real Estate": "750 Real Estate Division", "761 Region 1": "761 Region 01", "762 Region 2": "762 Region 02", "763 Region 3": "763 Region 03", "764 Region 4": "764 Region 04", "765 Region 5": "765 Region 05", "766 Region 6": "766 Region 06", "767 Region 7": "767 Region 07", "768 Region 8": "768 Region 08", "900 Corporate": "900 Corporate Department", "950 Rio Truss": "950 Rio Truss"};
 
 // All tabs default to showing every status, so nothing (including committed items you're
 // actively testing removal/deferral on) is hidden by default during a live review.
@@ -713,7 +717,7 @@ function lookupAssetClass(projectType, deprRaw){
   return ASSET_CLASS_CROSSWALK[key] || null;
 }
 
-function monthYearLabel(y, m){ return `${MONTHS[m-1]}-${y}`; }
+function monthYearLabel(y, m){ return `${m}/1/${y}`; }
 
 // Compact currency for dense monthly grids (Cash Flow) - e.g. $1.68M, $536K. Always
 // pass the exact value as a title attribute alongside this so hovering shows the full figure.
@@ -1532,10 +1536,15 @@ function buildAdaptiveRows(projects){
   const rows = [];
   const unmappedMap = new Map();
   const unmatchedLevelMap = new Map();
+  const exportedProjectIds = new Set();
+  const versionInput = document.getElementById('budget-version-input');
+  const version = versionInput && versionInput.value ? versionInput.value : '1';
+  const poNumberLabel = `2027 F&F Budget – Version ${version}`;
 
   projects.forEach(p => {
     const months = monthlyCashFlowOrdered(p);
     if (!months.length) return;
+    exportedProjectIds.add(p.projectId);
 
     const lastMonth = months[months.length - 1];
     const poDueLabel = monthYearLabel(lastMonth.y, lastMonth.m);
@@ -1568,8 +1577,8 @@ function buildAdaptiveRows(projects){
       rows.push({
         'Level Code': levelCode,
         'Purchase Order Status': 'Draft',
-        'PO Number': p.projectId,
-        'Item (Label)': p.name,
+        'PO Number': poNumberLabel,
+        'Item (Label)': `${p.name} - Fexa Project ${p.projectId}`,
         'Suppliers Name': '',
         'Suppliers Code': '',
         'Purchase Order Line Due Date': monthYearLabel(mo.y, mo.m),
@@ -1587,7 +1596,7 @@ function buildAdaptiveRows(projects){
 
   const unmapped = Array.from(unmappedMap.values()).sort((a,b) => b.budget - a.budget);
   const unmatchedLevelCodes = Array.from(unmatchedLevelMap.values()).sort((a,b) => b.budget - a.budget);
-  return { rows, unmapped, unmatchedLevelCodes };
+  return { rows, unmapped, unmatchedLevelCodes, projectCount: exportedProjectIds.size };
 }
 
 const FEXA_EXPORT_HEADERS = ['Project ID','Store Number','Store Identifier','Project Status','Store District',
@@ -1614,12 +1623,12 @@ function downloadAdjustedData(){
     'Project Planned Completion Date': p.completionDate,
     'Project Estimated Effort (Days)': p.effortDays,
     'Responsible Department': p.department,
-    'Edited This Session': p._edited ? 'Yes' : '',
+    'Edited This Session': p._edited ? `Start Date Move - ${Number(p.startDate.split('-')[1])}` : '',
     'Removed This Session': p._removed ? 'Yes' : '',
   }));
 
   const csv = Papa.unparse({ fields: FEXA_EXPORT_HEADERS, data: rows.map(r => FEXA_EXPORT_HEADERS.map(h => r[h])) });
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   const stamp = new Date().toISOString().slice(0,10);
@@ -1639,7 +1648,7 @@ function downloadAdjustedData(){
 }
 
 function downloadAdaptiveExport(){
-  const { rows, unmapped, unmatchedLevelCodes } = buildAdaptiveRows(activeProjects());
+  const { rows, unmapped, unmatchedLevelCodes, projectCount } = buildAdaptiveRows(activeProjects());
   const banner = document.getElementById('export-banner');
 
   if (!rows.length){
@@ -1650,7 +1659,7 @@ function downloadAdaptiveExport(){
   }
 
   const csv = Papa.unparse({ fields: ADAPTIVE_HEADERS, data: rows.map(r => ADAPTIVE_HEADERS.map(h => r[h])) });
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   const stamp = new Date().toISOString().slice(0,10);
@@ -1661,7 +1670,7 @@ function downloadAdaptiveExport(){
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 
-  const projectsExported = new Set(rows.map(r => r['PO Number'])).size;
+  const projectsExported = projectCount;
   banner.classList.add('show');
 
   let html = `<button class="banner-close" aria-label="Dismiss">✕</button><strong>Exported ${rows.length} line${rows.length===1?'':'s'} across ${projectsExported} project${projectsExported===1?'':'s'}.</strong>`;
