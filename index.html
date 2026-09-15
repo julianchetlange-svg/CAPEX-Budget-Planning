@@ -116,10 +116,10 @@
   .banner ul{ margin:6px 0 0; padding-left:18px; }
 
   /* ---------- KPI cards ---------- */
-  .kpi-row{ display:grid; grid-template-columns:repeat(4, 1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); margin-bottom:28px; }
-  .kpi{ background:var(--surface); padding:18px 20px; }
-  .kpi .label{ font-size:12px; color:var(--steel); margin-bottom:8px; }
-  .kpi .value{ font-family:'IBM Plex Mono', monospace; font-size:26px; font-weight:600; letter-spacing:-0.02em; }
+  .kpi-row{ display:grid; grid-template-columns:repeat(4, 1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); margin-bottom:18px; }
+  .kpi{ background:var(--surface); padding:11px 16px; }
+  .kpi .label{ font-size:11px; color:var(--steel); margin-bottom:4px; }
+  .kpi .value{ font-family:'IBM Plex Mono', monospace; font-size:20px; font-weight:600; letter-spacing:-0.02em; }
   .kpi .sub{ font-size:11.5px; color:var(--steel-light); margin-top:4px; }
   .kpi.accent .value{ color:var(--accent); }
   .kpi.fleet .value{ color:var(--fleet); }
@@ -191,6 +191,7 @@
   #detail-table.dense th:nth-child(13), #detail-table.dense td:nth-child(13){ width:52px; }
   #detail-table.dense th:nth-child(14), #detail-table.dense td:nth-child(14){ width:52px; }
   #detail-table.dense th.num, #detail-table.dense td.num{ text-align:center; }
+  #detail-table.dense th:nth-child(15), #detail-table.dense td:nth-child(15){ width:115px; }
   #detail-table.dense thead th{ cursor:pointer; }
   thead th{
     font-family:'IBM Plex Mono', monospace; font-weight:500; font-size:11px; color:var(--steel);
@@ -207,6 +208,29 @@
   td.desc-cell{ white-space:normal; max-width:280px; color:var(--steel); }
   td.name-cell{ white-space:normal; max-width:220px; font-weight:500; }
   .tag{ display:inline-block; padding:2px 7px; font-size:11px; border:1px solid var(--rule-strong); max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; vertical-align:middle; box-sizing:border-box; }
+  /* ---------- Live editing controls (Project Detail) ---------- */
+  tr.row-edited td{ background:var(--fleet-soft) !important; }
+  tr.row-edited td.sticky-col{ background:var(--fleet-soft) !important; }
+  tr.row-removed td{ opacity:0.45; }
+  tr.row-removed:hover td{ opacity:0.65; }
+  .edit-cell{ display:flex; align-items:center; gap:4px; white-space:normal !important; }
+  .month-select, .year-select{
+    font-family:'IBM Plex Mono', monospace; font-size:10px; border:1px solid var(--rule-strong);
+    background:var(--surface); padding:2px; color:var(--ink); cursor:pointer;
+  }
+  .month-select{ width:52px; }
+  .year-select{ width:48px; }
+  .month-select:disabled, .year-select:disabled{ opacity:0.4; cursor:default; }
+  .defer-btn{
+    font-size:10px; font-weight:600; background:none; border:1px solid var(--rule-strong); color:var(--steel);
+    padding:2px 5px; cursor:pointer; white-space:nowrap;
+  }
+  .defer-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .reset-row-btn:hover{ border-color:var(--warn); color:var(--warn); }
+  .remove-row-btn:hover{ border-color:var(--warn); color:var(--warn); }
+  .restore-row-btn{ border-color:var(--accent); color:var(--accent); font-weight:700; }
+  .restore-row-btn:hover{ background:var(--accent); color:#fff; }
+  .edited-dot{ width:6px; height:6px; border-radius:50%; background:var(--fleet-fill); flex:none; }
   .tag.dept-store{ border-color:var(--accent); color:var(--accent); }
   .tag.dept-fleet{ border-color:var(--fleet); color:var(--fleet); }
   .tag.dept-neutral{ border-color:var(--steel-light); color:var(--steel); }
@@ -283,6 +307,7 @@
       <button class="btn ghost" id="load-btn">Load CSV export</button>
       <input type="file" id="csv-input" accept=".csv">
       <button class="btn adaptive" id="adaptive-export-btn">Adaptive Export</button>
+      <button class="btn ghost" id="download-adjusted-btn">Download Adjusted Data</button>
     </div>
   </div>
 
@@ -299,7 +324,8 @@
     <div class="section-head" id="committed-head" style="display:none;"><h2>Committed</h2></div>
     <div class="kpi-row" id="committed-kpis" style="display:none;"></div>
     <div class="section-head"><h2>Overall</h2></div>
-    <p class="table-note" style="margin-top:-8px;">Bars show each type's total remaining budget; the <span style="color:var(--warn); font-weight:600;">red</span> portion marks spend already committed (Active, Budget Plan, Pre-Construction) rather than still a candidate.</p>
+    <div class="kpi-row" id="overall-kpis"></div>
+    <p class="table-note" style="margin-top:-8px;">Bars show each type's spend landing in the selected budget year (matching Cash Flow); the <span style="color:var(--warn); font-weight:600;">red</span> portion marks spend already committed (Active, Budget Plan, Pre-Construction) rather than still a candidate.</p>
     <div class="dept-grid" id="dept-grid"></div>
   </section>
 
@@ -329,6 +355,7 @@
       <button class="btn ghost reset" id="detail-reset">Clear filters</button>
     </div>
     <div class="section-head"><h2>Project list</h2><span class="count" id="detail-count"></span></div>
+    <p class="table-note">Adjust a project's schedule live in the meeting: pick a new start month and completion shifts with it, keeping the same duration. Use Remove to exclude a project from the budget entirely for now (it stays visible here, dimmed, with a Restore button) — Summary, Cash Flow, Depreciation, and the Adaptive Export all update immediately either way. Download the adjusted data from the button above to carry corrections back into Fexa; removed projects are flagged there too, not deleted.</p>
     <div class="table-wrap"><table id="detail-table"></table></div>
   </section>
 
@@ -361,7 +388,7 @@
     <div class="table-wrap"><table id="cf-heatmap" class="dense heatmap"></table></div>
 
     <div class="section-head"><h2>Monthly cash flow by project type</h2></div>
-    <p class="table-note">Each project's remaining budget (Project Budget minus any Project Total Cost already spent or committed) is divided evenly across its planned spend duration, starting the month the project begins. Figures below reflect only the portion of that spend that falls within the selected budget year. Defaults to Budget Request (candidate) projects only, matching the Summary tab — use the Status filter above to include committed projects.</p>
+    <p class="table-note">Each project's remaining budget (Project Budget minus any Project Total Cost already spent or committed) is divided evenly across its planned spend duration, starting the month the project begins. Figures below reflect only the portion of that spend that falls within the selected budget year. Shows every status by default — use the Status filter above to isolate candidates or committed projects.</p>
     <div class="table-wrap"><table id="cf-type-table"></table></div>
 
     <div class="section-head"><h2>Monthly cash flow by store</h2><span class="count" id="cf-count"></span></div>
@@ -427,12 +454,12 @@ const ASSET_CLASS_CROSSWALK = {"Sitework||15": {"code": "Building - 15 yr", "mon
 // Most pass through unchanged; a handful (distribution centers, regions, a couple of stores) differ.
 const LEVEL_CODE_MAP = {"001 Galveston": "001 Galveston", "003 Brazoria": "003 Brazoria", "004 League City": "004 League City", "006 Bastrop": "006 Bastrop", "007 Brownwood": "007 Brownwood", "008 Stephenville": "008 Stephenville", "010 Belton": "010 Belton", "011 South Austin": "011 South Austin", "012 Weimar": "012 Weimar", "013 Richwood": "013 Richwood", "015 Harlingen": "015 Harlingen", "016 New Braunfels": "016 New Braunfels", "017 N Corpus Christi": "017 N Corpus Christi", "018 Abilene": "018 Abilene", "019 Midland": "019 Midland", "020 Victoria": "020 Victoria", "022 Greenville": "022 Greenville", "024 Pasadena": "024 Pasadena", "025 NW San Antonio": "025 NW San Antonio", "027 SE San Antonio": "027 SE San Antonio", "028 Baytown": "028 Baytown", "029 S Corpus Christi": "029 S Corpus Christi", "030 San Angelo": "030 San Angelo", "032 Palestine": "032 Palestine", "033 Pharr": "033 Pharr", "034 Bryan": "034 Bryan", "035 Odessa": "035 Odessa", "036 Lufkin": "036 Lufkin", "037 Brownsville": "037 Brownsville", "038 Rosenberg": "038 Rosenberg", "039 Longview": "039 Longview", "040 Beeville": "040 Beeville", "041 Laredo": "041 Laredo", "042 Las Cruces": "042 Las Cruces", "043 Huntsville": "043 Huntsville", "044 Kerrville": "044 Kerrville", "047 Waco": "047 Waco", "049 Tyler": "049 Tyler", "050 SC San Antonio": "050 SC San Antonio", "052 Cleburne": "052 Cleburne", "053 Taylor": "053 Taylor", "055 Georgetown": "055 Georgetown", "057 Tomball": "057 Tomball", "058 Gonzales": "058 Gonzales", "059 Corsicana": "059 Corsicana", "060 Brenham": "060 Brenham", "061 Mt. Pleasant": "061 Mt. Pleasant", "062 Austin Manchaca": "062 Austin Manchaca", "063 Gainesville": "063 Gainesville", "064 Orange": "064 Orange", "066 Alice": "066 Alice", "067 Terrell": "067 Terrell", "068 Plainview": "068 Plainview", "069 Austin 290 West": "069 Austin 290 West", "070 San Marcos": "070 San Marcos", "071 Nacogdoches": "071 Nacogdoches", "072 Paris": "072 Paris", "074 Bee Cave": "074 Bee Cave", "075 El Paso": "075 El Paso HP", "077 Searcy": "077 Searcy", "082 Ardmore": "082 Ardmore", "083 Duncan": "083 Duncan", "084 Hobbs": "084 Hobbs", "085 Roswell": "085 Roswell", "086 Alpine": "086 Alpine", "087 Fort Stockton": "087 Fort Stockton", "088 Del Rio": "088 Del Rio", "089 Mission": "089 Mission", "090 Okmulgee": "090 Okmulgee", "091 Carlsbad": "091 Carlsbad", "093 Weslaco": "093 Weslaco", "094 Vicksburg": "094 Vicksburg", "096 El Campo": "096 El Campo", "097 Eagle Pass": "097 Eagle Pass", "098 Cleveland": "098 Cleveland", "100 Edinburg": "100 Edinburg", "101 Universal City": "101 Universal City", "103 San Benito": "103 San Benito", "107 Laurel": "107 Laurel", "108 Rio Grande City": "108 Rio Grande City", "109 Aransas Pass": "109 Aransas Pass", "111 Floresville": "111 Floresville", "112 Dayton": "112 Dayton", "113 Montgomery": "113 Montgomery", "114 Alvin": "114 Alvin", "115 Midlothian": "115 Midlothian", "116 Bay City": "116 Bay City", "117 Liberty Hill": "117 Liberty Hill", "118 Spicewood": "118 Spicewood", "119 Lubbock": "119 Lubbock", "120 Lockhart": "120 Lockhart", "121 New Caney": "121 New Caney", "122 Canyon Lake": "122 Canyon Lake", "353 Dayton Distribution": "353 Dayton Distribution", "355 Pharr Central Delivery": "355 Centralized Delivery", "355 Pharr Reload": "355 Pharr - Reload", "356 Midland Distribution Center": "356 Midland - DC", "359 Burnet Reload": "359 Burnet Reload", "387 Window Delivery": "387 Region 7&8 Window Service", "450 McCoys Millworks": "450-New Braunfels Millwork", "479 Rebar Bender": "479 Burnet Manufacturing", "489 EWP Program": "489 Burnet EWP", "508 The Retreat": "508 Retreat", "730 Store Development": "730 Store Development Dept", "735 Fleet": "735 Fleet", "750 Real Estate": "750 Real Estate Division", "761 Region 1": "761 Region 01", "762 Region 2": "762 Region 02", "763 Region 3": "763 Region 03", "764 Region 4": "764 Region 04", "765 Region 5": "765 Region 05", "766 Region 6": "766 Region 06", "767 Region 7": "767 Region 07", "768 Region 8": "768 Region 08", "900 Corporate": "900 Corporate Department", "950 Rio Truss": "950 Rio Truss", "123 Reno": "123 Reno"};
 
-// Cash Flow and Depreciation default to Candidate (Budget Request) projects only, to match
-// the Summary tab's headline figures. Project Detail defaults to showing everything.
+// All tabs default to showing every status, so nothing (including committed items you're
+// actively testing removal/deferral on) is hidden by default during a live review.
 const DEFAULT_FILTERS = {
   detail: { region:'All', type:'All', dept:'All', store:'All', status:'All' },
-  cf:     { region:'All', type:'All', dept:'All', status:'Budget Request' },
-  dep:    { region:'All', type:'All', dept:'All', status:'Budget Request' },
+  cf:     { region:'All', type:'All', dept:'All', status:'All' },
+  dep:    { region:'All', type:'All', dept:'All', status:'All' },
 };
 
 let state = {
@@ -579,6 +606,65 @@ function ymKey(y, m){ return `${y}-${String(m).padStart(2,'0')}`; }
 function addMonths(y, m, n){ const t = y*12 + (m-1) + n; return { y: Math.floor(t/12), m: (t%12)+1 }; }
 function parseYM(dateStr){ const [y,m] = dateStr.split('-').map(Number); return { y, m }; }
 
+/* =========================================================================
+   LIVE EDITING (Project Detail) - defer a project's schedule or move its
+   start month, with completion shifting to preserve the original gap.
+   ========================================================================= */
+function daysInMonth(y, m){ return new Date(y, m, 0).getDate(); } // m is 1-indexed target month
+
+function shiftDateByMonths(iso, deltaMonths){
+  if (!iso) return iso;
+  const [y, m, d] = iso.split('-').map(Number);
+  const total = y * 12 + (m - 1) + deltaMonths;
+  const newY = Math.floor(total / 12);
+  const newM = (total % 12) + 1;
+  const newD = Math.min(d, daysInMonth(newY, newM));
+  return `${newY}-${String(newM).padStart(2,'0')}-${String(newD).padStart(2,'0')}`;
+}
+
+function applyEditAndRerender(){
+  const scrollY = window.scrollY;
+  renderAll();
+  window.scrollTo(0, scrollY);
+}
+
+
+function updateProjectStartMonth(projectId, newYM){
+  const p = state.projects.find(pr => pr.projectId === projectId);
+  if (!p || !p.startDate || !newYM) return;
+  const [newY, newM] = newYM.split('-').map(Number);
+  const { y: oldY, m: oldM } = parseYM(p.startDate);
+  const deltaMonths = (newY * 12 + (newM - 1)) - (oldY * 12 + (oldM - 1));
+  if (!deltaMonths) return;
+  p.startDate = shiftDateByMonths(p.startDate, deltaMonths);
+  if (p.completionDate) p.completionDate = shiftDateByMonths(p.completionDate, deltaMonths);
+  p._edited = true;
+  applyEditAndRerender();
+}
+
+function resetProjectDates(projectId){
+  const p = state.projects.find(pr => pr.projectId === projectId);
+  if (!p) return;
+  p.startDate = p._originalStartDate;
+  p.completionDate = p._originalCompletionDate;
+  p._edited = false;
+  applyEditAndRerender();
+}
+
+function toggleProjectRemoved(projectId){
+  const p = state.projects.find(pr => pr.projectId === projectId);
+  if (!p) return;
+  p._removed = !p._removed;
+  applyEditAndRerender();
+}
+
+// Projects excluded from budget totals this session (Summary, pies, Cash Flow, Depreciation,
+// Adaptive Export) but still visible - dimmed - on Project Detail so nothing looks silently lost.
+function activeProjects(){
+  return state.projects.filter(p => !p._removed);
+}
+
+
 function projectCashFlow(p){
   const out = {};
   if (!p.startDate || !p.durationMonths) return out;
@@ -589,6 +675,15 @@ function projectCashFlow(p){
     out[ymKey(yy, mm)] = (out[ymKey(yy, mm)] || 0) + monthly;
   }
   return out;
+}
+
+// The portion of a project's remaining budget that lands within a specific budget year -
+// used everywhere a headline "budget" figure should match Cash Flow's year scope (Summary,
+// the pie charts) rather than the project's full remaining budget regardless of timing.
+function projectYearBudget(p, fy){
+  const cf = projectCashFlow(p);
+  const prefix = String(fy);
+  return Object.entries(cf).reduce((s, [k, v]) => s + (k.startsWith(prefix) ? v : 0), 0);
 }
 
 function projectDepreciation(p){
@@ -763,22 +858,22 @@ function renderDonutCard(containerEl, title, segments){
   `;
 }
 
-function renderSummaryPies(allProjects){
+function renderSummaryPies(allProjects, fy){
   const container = document.getElementById('summary-pies');
   container.innerHTML = '<div id="pie-1"></div><div id="pie-2"></div>';
 
   // 1. Candidate vs Committed
-  const candTotal = allProjects.filter(isCandidate).reduce((s,p)=>s+p.remainingBudget,0);
-  const commTotal = allProjects.filter(p=>!isCandidate(p)).reduce((s,p)=>s+p.remainingBudget,0);
+  const candTotal = allProjects.filter(isCandidate).reduce((s,p)=>s+projectYearBudget(p,fy),0);
+  const commTotal = allProjects.filter(p=>!isCandidate(p)).reduce((s,p)=>s+projectYearBudget(p,fy),0);
   renderDonutCard(document.getElementById('pie-1'), 'Candidate vs. Committed', [
     { label: 'Candidate', value: candTotal, color: 'var(--steel)' },
     { label: 'Committed', value: commTotal, color: 'var(--warn)' },
   ]);
 
   // 2. Store Development vs Fleet (overall - both candidate and committed)
-  const sdTotal = allProjects.filter(p=>p.department==='Store Development').reduce((s,p)=>s+p.remainingBudget,0);
-  const flTotal = allProjects.filter(p=>p.department==='Fleet').reduce((s,p)=>s+p.remainingBudget,0);
-  const otherDeptTotal = allProjects.filter(p=>p.department!=='Store Development' && p.department!=='Fleet').reduce((s,p)=>s+p.remainingBudget,0);
+  const sdTotal = allProjects.filter(p=>p.department==='Store Development').reduce((s,p)=>s+projectYearBudget(p,fy),0);
+  const flTotal = allProjects.filter(p=>p.department==='Fleet').reduce((s,p)=>s+projectYearBudget(p,fy),0);
+  const otherDeptTotal = allProjects.filter(p=>p.department!=='Store Development' && p.department!=='Fleet').reduce((s,p)=>s+projectYearBudget(p,fy),0);
   const deptSegments = [
     { label: 'Store Development', value: sdTotal, color: 'var(--accent)' },
     { label: 'Fleet', value: flTotal, color: 'var(--fleet-fill)' },
@@ -789,8 +884,9 @@ function renderSummaryPies(allProjects){
 
 
 function renderSummary(){
-  const allProjects = state.projects;
-  renderSummaryPies(allProjects);
+  const allProjects = activeProjects();
+  const fy = state.fiscalYear;
+  renderSummaryPies(allProjects, fy);
   const candidateProjects = allProjects.filter(isCandidate);
   const committedProjects = allProjects.filter(p => !isCandidate(p));
 
@@ -798,9 +894,9 @@ function renderSummary(){
     const storeDev = list.filter(p => p.department === 'Store Development');
     const fleet = list.filter(p => p.department === 'Fleet');
     return {
-      total: list.reduce((s,p)=>s+p.remainingBudget,0),
-      storeDevTotal: storeDev.reduce((s,p)=>s+p.remainingBudget,0),
-      fleetTotal: fleet.reduce((s,p)=>s+p.remainingBudget,0),
+      total: list.reduce((s,p)=>s+projectYearBudget(p,fy),0),
+      storeDevTotal: storeDev.reduce((s,p)=>s+projectYearBudget(p,fy),0),
+      fleetTotal: fleet.reduce((s,p)=>s+projectYearBudget(p,fy),0),
       storeDevCount: storeDev.length,
       fleetCount: fleet.length,
     };
@@ -813,7 +909,7 @@ function renderSummary(){
     <div class="kpi">
       <div class="label">Candidate CAPEX budget</div>
       <div class="value">${fmtMoney(cand.total, {showZero:true})}</div>
-      <div class="sub">${candidateProjects.length} project${candidateProjects.length===1?'':'s'} (${CANDIDATE_STATUS})${totalAlreadySpent ? ` · ${fmtMoney(totalAlreadySpent,{showZero:true})} already spent excluded` : ''}</div>
+      <div class="sub">${candidateProjects.length} project${candidateProjects.length===1?'':'s'} (${CANDIDATE_STATUS}) · ${fy} portion only${totalAlreadySpent ? ` · ${fmtMoney(totalAlreadySpent,{showZero:true})} already spent excluded` : ''}</div>
     </div>
     <div class="kpi">
       <div class="label">Candidate projects</div>
@@ -838,7 +934,7 @@ function renderSummary(){
   if (committedProjects.length){
     const comm = deptFigures(committedProjects);
     const byStatus = {};
-    committedProjects.forEach(p => { byStatus[p.status] = (byStatus[p.status] || 0) + p.remainingBudget; });
+    committedProjects.forEach(p => { byStatus[p.status] = (byStatus[p.status] || 0) + projectYearBudget(p,fy); });
     const statusBits = Object.entries(byStatus).sort((a,b)=>b[1]-a[1]).map(([s,v]) => `${s} ${fmtMoney(v,{showZero:true})}`).join(' · ');
 
     committedHead.style.display = '';
@@ -847,7 +943,7 @@ function renderSummary(){
       <div class="kpi">
         <div class="label">Committed CAPEX budget</div>
         <div class="value">${fmtMoney(comm.total, {showZero:true})}</div>
-        <div class="sub">${statusBits}</div>
+        <div class="sub">${statusBits} · ${fy} portion only</div>
       </div>
       <div class="kpi">
         <div class="label">Committed projects</div>
@@ -872,7 +968,31 @@ function renderSummary(){
   }
 
   // --- Overall breakdown (candidates + committed combined) ---
-  const overallTotal = allProjects.reduce((s,p) => s + p.remainingBudget, 0);
+  const overall = deptFigures(allProjects);
+  const overallTotal = overall.total;
+  document.getElementById('overall-kpis').innerHTML = `
+    <div class="kpi">
+      <div class="label">Overall CAPEX budget</div>
+      <div class="value">${fmtMoney(overallTotal, {showZero:true})}</div>
+      <div class="sub">${fy} portion only</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Overall projects</div>
+      <div class="value">${allProjects.length}</div>
+      <div class="sub">avg ${fmtMoney(allProjects.length ? overallTotal/allProjects.length : 0)} per project</div>
+    </div>
+    <div class="kpi accent">
+      <div class="label">Store Development</div>
+      <div class="value">${fmtMoney(overall.storeDevTotal, {showZero:true})}</div>
+      <div class="sub">${overall.storeDevCount} projects · ${overallTotal ? fmtPct(overall.storeDevTotal/overallTotal) : '0.0%'} of overall total</div>
+    </div>
+    <div class="kpi fleet">
+      <div class="label">Fleet</div>
+      <div class="value">${fmtMoney(overall.fleetTotal, {showZero:true})}</div>
+      <div class="sub">${overall.fleetCount} projects · ${overallTotal ? fmtPct(overall.fleetTotal/overallTotal) : '0.0%'} of overall total</div>
+    </div>
+  `;
+
   const deptNames = uniqueSorted(allProjects.map(p => p.department));
   const priority = ['Store Development', 'Fleet'];
   const orderedDepts = [
@@ -885,9 +1005,10 @@ function renderSummary(){
     const byType = {};
     list.forEach(p => {
       if (!byType[p.type]) byType[p.type] = { count:0, budget:0, committed:0 };
+      const yb = projectYearBudget(p,fy);
       byType[p.type].count++;
-      byType[p.type].budget += p.remainingBudget;
-      if (!isCandidate(p)) byType[p.type].committed += p.remainingBudget;
+      byType[p.type].budget += yb;
+      if (!isCandidate(p)) byType[p.type].committed += yb;
     });
     const rows = Object.entries(byType).sort((a,b) => b[1].budget - a[1].budget);
     const maxBudget = rows.length ? rows[0][1].budget : 1;
@@ -915,7 +1036,7 @@ function renderSummary(){
   const deptGrid = document.getElementById('dept-grid');
   deptGrid.innerHTML = orderedDepts.map(dept => {
     const list = allProjects.filter(p => p.department === dept);
-    const total = list.reduce((s,p)=>s+p.remainingBudget,0);
+    const total = list.reduce((s,p)=>s+projectYearBudget(p,fy),0);
     const color = deptColor(dept);
     const panelClass = color === 'fleet' ? 'dept-panel fleet' : color === 'neutral' ? 'dept-panel neutral' : 'dept-panel';
     return `
@@ -924,12 +1045,28 @@ function renderSummary(){
       <div class="dept-pct">${overallTotal ? fmtPct(total/overallTotal) : '0.0%'} of overall CAPEX · ${list.length} project${list.length===1?'':'s'}</div>
       ${typeBreakdown(list, overallTotal) || '<div class="empty-state">No projects in this department.</div>'}
     </div>`;
+
   }).join('');
 }
 
 /* =========================================================================
    RENDER: PROJECT DETAIL
    ========================================================================= */
+function renderMonthYearSelects(p){
+  if (!p.startDate) return '<span style="color:var(--steel-light);">—</span>';
+  const [curY, curM] = p.startDate.split('-').map(Number);
+  const base = state.fiscalYear || new Date().getFullYear();
+  const years = [];
+  for (let y = base - 1; y <= base + 3; y++) years.push(y);
+  const disabled = p._removed ? 'disabled' : '';
+  const monthOpts = MONTHS.map((mn, i) => `<option value="${i+1}" ${curM===i+1?'selected':''}>${mn}</option>`).join('');
+  const yearOpts = years.map(y => `<option value="${y}" ${curY===y?'selected':''}>${y}</option>`).join('');
+  return `
+    <select class="month-select" data-id="${p.projectId}" title="Change start month" ${disabled}>${monthOpts}</select>
+    <select class="year-select" data-id="${p.projectId}" title="Change start year" ${disabled}>${yearOpts}</select>
+  `;
+}
+
 const DETAIL_COLUMNS = [
   { key:'projectId', label:'ID', num:true },
   { key:'storeIdentifier', label:'Store' },
@@ -965,22 +1102,22 @@ function renderDetailTable(){
     return 0;
   });
 
-  document.getElementById('detail-count').textContent = `${sorted.length} of ${state.projects.length} projects`;
+  document.getElementById('detail-count').textContent = `${sorted.length} of ${state.projects.length} projects${state.projects.some(p=>p._edited) ? ` · ${state.projects.filter(p=>p._edited).length} edited` : ''}${state.projects.some(p=>p._removed) ? ` · ${state.projects.filter(p=>p._removed).length} removed this session` : ''}`;
 
   const table = document.getElementById('detail-table');
   table.className = 'dense';
   const thead = `<thead><tr>${DETAIL_COLUMNS.map(c => `
     <th class="${c.num?'num':''} ${c.key===key?'sorted '+dir:''}" data-key="${c.key}">${c.label}</th>
-  `).join('')}</tr></thead>`;
+  `).join('')}<th>Adjust</th></tr></thead>`;
 
   const tbody = sorted.length ? `<tbody>${sorted.map(p => `
-    <tr>
+    <tr class="${p._edited ? 'row-edited' : ''} ${p._removed ? 'row-removed' : ''}">
       <td class="num">${p.projectId}</td>
       <td title="${p.storeIdentifier}">${p.storeIdentifier}</td>
       <td title="${p.region}">${p.region}</td>
       <td><span class="tag ${p.department==='Fleet'?'dept-fleet':p.department==='Store Development'?'dept-store':'dept-neutral'}" title="${p.department}">${p.department}</span></td>
       <td title="${p.type}">${p.type}</td>
-      <td class="name-cell" title="${p.name}">${p.name}</td>
+      <td class="name-cell" title="${p.name}">${p._removed ? '<span class="tag" style="border-color:var(--warn); color:var(--warn); margin-right:5px;">Removed</span>' : ''}${p.name}</td>
       <td title="${p.status}">${p.status}</td>
       <td class="num" title="${fmtMoney(p.budget,{showZero:true})}">${fmtMoneyCompact(p.budget)}</td>
       <td class="num" title="${fmtMoney(p.totalCost,{showZero:true})}">${fmtMoneyCompact(p.totalCost)}</td>
@@ -989,12 +1126,22 @@ function renderDetailTable(){
       <td class="num">${p.durationMonths}</td>
       <td title="${fmtDate(p.completionDate)}">${fmtDateCompact(p.completionDate)}</td>
       <td class="num">${p.deprLabel}</td>
+      <td>
+        <div class="edit-cell" style="flex-wrap:wrap; row-gap:4px;">
+          ${p._edited ? '<span class="edited-dot" title="Edited this session"></span>' : ''}
+          ${renderMonthYearSelects(p)}
+          ${p._edited ? `<button class="defer-btn reset-row-btn" data-id="${p.projectId}" title="Restore this project's original imported dates">↺</button>` : ''}
+          ${p._removed
+            ? `<button class="defer-btn restore-row-btn" data-id="${p.projectId}" title="Restore this project to the budget">Restore</button>`
+            : `<button class="defer-btn remove-row-btn" data-id="${p.projectId}" title="Exclude this project from the budget for now">Remove</button>`}
+        </div>
+      </td>
     </tr>
-  `).join('')}</tbody>` : `<tbody><tr><td colspan="${DETAIL_COLUMNS.length}"><div class="empty-state">No projects match the current filters.</div></td></tr></tbody>`;
+  `).join('')}</tbody>` : `<tbody><tr><td colspan="${DETAIL_COLUMNS.length+1}"><div class="empty-state">No projects match the current filters.</div></td></tr></tbody>`;
 
   table.innerHTML = thead + tbody;
 
-  table.querySelectorAll('thead th').forEach(th => {
+  table.querySelectorAll('thead th[data-key]').forEach(th => {
     th.addEventListener('click', () => {
       const k = th.dataset.key;
       if (state.sort.detail.key === k){
@@ -1003,6 +1150,22 @@ function renderDetailTable(){
         state.sort.detail = { key: k, dir: k === 'storeIdentifier' ? 'asc' : 'desc' };
       }
       renderDetailTable();
+    });
+  });
+
+  table.querySelectorAll('.reset-row-btn').forEach(btn => {
+    btn.addEventListener('click', () => resetProjectDates(Number(btn.dataset.id)));
+  });
+  table.querySelectorAll('.remove-row-btn, .restore-row-btn').forEach(btn => {
+    btn.addEventListener('click', () => toggleProjectRemoved(Number(btn.dataset.id)));
+  });
+  table.querySelectorAll('.month-select, .year-select').forEach(sel => {
+    sel.addEventListener('change', () => {
+      const id = Number(sel.dataset.id);
+      const monthSel = table.querySelector(`.month-select[data-id="${id}"]`);
+      const yearSel = table.querySelector(`.year-select[data-id="${id}"]`);
+      const ym = `${yearSel.value}-${String(monthSel.value).padStart(2,'0')}`;
+      updateProjectStartMonth(id, ym);
     });
   });
 }
@@ -1082,7 +1245,7 @@ function renderCashFlow(){
   refreshFilterOptions('cf', ['region','type','dept','status']);
   const fy = state.fiscalYear;
   const cols = monthColumnsForYear(fy);
-  const filtered = applyFilters(state.projects, state.filters.cf);
+  const filtered = applyFilters(activeProjects(), state.filters.cf);
 
   // Precompute each project's cash flow map once.
   const withCF = filtered.map(p => ({ p, cf: projectCashFlow(p) }));
@@ -1150,7 +1313,8 @@ function renderCashFlow(){
   `;
 
   // --- Store-level detail (aggregates every project at each store; expandable to see the individual projects) ---
-  document.getElementById('cf-count').textContent = `${withCF.length} of ${state.projects.length} projects across ${new Set(withCF.map(({p}) => p.storeIdentifier)).size} stores`;
+  const removedCount = state.projects.filter(p=>p._removed).length;
+  document.getElementById('cf-count').textContent = `${withCF.length} of ${state.projects.length} projects across ${new Set(withCF.map(({p}) => p.storeIdentifier)).size} stores${removedCount ? ` · ${removedCount} removed this session` : ''}`;
   const cfDetailTable = document.getElementById('cf-detail-table');
   cfDetailTable.className = 'dense';
 
@@ -1229,15 +1393,15 @@ function renderDepreciation(){
   refreshFilterOptions('dep', ['region','type','dept','status']);
   const fy = state.fiscalYear;
   const cols = monthColumnsForYear(fy);
-  const filtered = applyFilters(state.projects, state.filters.dep);
+  const filtered = applyFilters(activeProjects(), state.filters.dep);
 
   const withDep = filtered.map(p => ({ p, dep: projectDepreciation(p) }));
   const totalFYDep = withDep.reduce((s, {dep}) => s + cols.reduce((ss,c) => ss + (dep.schedule[c.key]||0), 0), 0);
   const inServiceThisYear = withDep.filter(({dep}) => dep.inServiceDate && dep.inServiceDate.startsWith(String(fy))).length;
-  const totalBudgetInView = filtered.reduce((s,p) => s + p.budget, 0);
+  const totalBudgetInView = filtered.reduce((s,p) => s + p.remainingBudget, 0);
   const noSchedule = withDep.filter(({p}) => !p.deprYearsNum);
 
-  const noteBase = "In-service date is set to the first day of the month following planned completion. Monthly depreciation is the project budget divided by the depreciation schedule (years × 12), applied straight-line from the in-service month through the end of its useful life. Defaults to Budget Request (candidate) projects only, matching the Summary tab — use the Status filter above to include committed projects.";
+  const noteBase = "In-service date is set to the first day of the month following planned completion. Monthly depreciation is the project budget divided by the depreciation schedule (years × 12), applied straight-line from the in-service month through the end of its useful life. Shows every status by default — use the Status filter above to isolate candidates or committed projects.";
   document.getElementById('dep-note').textContent = noSchedule.length
     ? `${noteBase} ${noSchedule.length} project${noSchedule.length===1?'':'s'} in view ${noSchedule.length===1?'has':'have'} a non-numeric schedule ("${Array.from(new Set(noSchedule.map(({p})=>p.deprLabel))).join('", "')}") and ${fmtMoney(noSchedule.reduce((s,{p})=>s+p.budget,0), {showZero:true})} of budget is excluded from the depreciation totals below.`
     : noteBase;
@@ -1302,7 +1466,8 @@ function renderDepreciation(){
     </tbody>
   `;
 
-  document.getElementById('dep-count').textContent = `${withDep.length} of ${state.projects.length} projects`;
+  const depRemovedCount = state.projects.filter(p=>p._removed).length;
+  document.getElementById('dep-count').textContent = `${withDep.length} of ${state.projects.length} projects${depRemovedCount ? ` · ${depRemovedCount} removed this session` : ''}`;
   const sorted = [...withDep].sort((a,b) => {
     const ka = storeSortKey(a.p.storeIdentifier), kb = storeSortKey(b.p.storeIdentifier);
     return ka !== kb ? ka - kb : a.p.storeIdentifier.localeCompare(b.p.storeIdentifier);
@@ -1425,8 +1590,56 @@ function buildAdaptiveRows(projects){
   return { rows, unmapped, unmatchedLevelCodes };
 }
 
+const FEXA_EXPORT_HEADERS = ['Project ID','Store Number','Store Identifier','Project Status','Store District',
+  'Project Name','Project Description','Project Budget','Project Total Cost','Project Type','Deprecation Schedule',
+  'Budget Year','Project Planned Start Date','Spend Duration- Months','Project Planned Completion Date',
+  'Project Estimated Effort (Days)','Responsible Department','Edited This Session','Removed This Session'];
+
+function downloadAdjustedData(){
+  const rows = state.projects.map(p => ({
+    'Project ID': p.projectId,
+    'Store Number': p.storeNumber,
+    'Store Identifier': p.storeIdentifier,
+    'Project Status': p.status,
+    'Store District': p.region,
+    'Project Name': p.name,
+    'Project Description': p.description,
+    'Project Budget': p.budget,
+    'Project Total Cost': p.totalCost,
+    'Project Type': p.type,
+    'Deprecation Schedule': p.deprYears,
+    'Budget Year': p.budgetYear,
+    'Project Planned Start Date': p.startDate,
+    'Spend Duration- Months': p.durationMonths,
+    'Project Planned Completion Date': p.completionDate,
+    'Project Estimated Effort (Days)': p.effortDays,
+    'Responsible Department': p.department,
+    'Edited This Session': p._edited ? 'Yes' : '',
+    'Removed This Session': p._removed ? 'Yes' : '',
+  }));
+
+  const csv = Papa.unparse({ fields: FEXA_EXPORT_HEADERS, data: rows.map(r => FEXA_EXPORT_HEADERS.map(h => r[h])) });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `adjusted_budget_data_${stamp}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  const editedCount = state.projects.filter(p => p._edited).length;
+  const removedCount = state.projects.filter(p => p._removed).length;
+  const banner = document.getElementById('export-banner');
+  banner.classList.add('show');
+  banner.innerHTML = `<button class="banner-close" aria-label="Dismiss">✕</button><strong>Downloaded adjusted data.</strong> ${editedCount} project${editedCount===1?'':'s'} with date changes, ${removedCount} removed this session — all flagged in their own columns. Full ${state.projects.length}-project set exported in the original Fexa column layout for reference when updating the source.`;
+  banner.querySelector('.banner-close').addEventListener('click', () => banner.classList.remove('show'));
+}
+
 function downloadAdaptiveExport(){
-  const { rows, unmapped, unmatchedLevelCodes } = buildAdaptiveRows(state.projects);
+  const { rows, unmapped, unmatchedLevelCodes } = buildAdaptiveRows(activeProjects());
   const banner = document.getElementById('export-banner');
 
   if (!rows.length){
@@ -1512,6 +1725,10 @@ function loadProjects(projects, label){
     // Project Total Cost is money already spent/committed in a prior year (e.g. 2026) and
     // won't hit the current budget year's cash flow. Remaining Budget is what's left to plan for.
     p.remainingBudget = Math.max(0, p.budget - (p.totalCost || 0));
+    p._edited = false;
+    p._originalStartDate = p.startDate;
+    p._originalCompletionDate = p.completionDate;
+    p._removed = false;
   });
   state.projects = projects;
   state.sourceLabel = label;
@@ -1532,6 +1749,7 @@ document.getElementById('tabbar').addEventListener('click', e => {
 
 document.getElementById('fy-select').addEventListener('change', e => {
   state.fiscalYear = Number(e.target.value);
+  renderSummary();
   renderCashFlow();
   renderDepreciation();
 });
@@ -1558,6 +1776,7 @@ document.getElementById('csv-input').addEventListener('change', e => {
 });
 document.getElementById('reset-btn').addEventListener('click', () => loadProjects(SAMPLE_DATA, 'Sample data'));
 document.getElementById('adaptive-export-btn').addEventListener('click', downloadAdaptiveExport);
+document.getElementById('download-adjusted-btn').addEventListener('click', downloadAdjustedData);
 
 wireFilterGroup('detail', renderDetailTable, ['region','type','dept','store','status']);
 wireFilterGroup('cf', renderCashFlow, ['region','type','dept','status']);
