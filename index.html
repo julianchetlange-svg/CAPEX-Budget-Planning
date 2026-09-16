@@ -454,6 +454,9 @@ const SAMPLE_DATA = [{"projectId": 243, "storeNumber": "82", "storeIdentifier": 
 // Keys are "normalized Project Type||normalized Depreciation Schedule".
 const ASSET_CLASS_CROSSWALK = {"Sitework||15": {"code": "Building - 15 yr", "months": 180}, "Roof||15": {"code": "Building - 15 yr", "months": 180}, "Metal Work||15": {"code": "Building - 15 yr", "months": 180}, "Metal Work||39.5": {"code": "Building - 39.5 yr", "months": 474}, "Interior Room Remodel||7": {"code": "Building - 7 yr", "months": 84}, "Interior Room Remodel||15": {"code": "Building - 15 yr", "months": 180}, "Interior Room Remodel||39.5": {"code": "Building - 39.5 yr", "months": 474}, "New Facility||39.5": {"code": "Building - 39.5 yr", "months": 474}, "New Facility||5": {"code": "Building - 5 yr", "months": 60}, "New Facility||7": {"code": "Building - 7 yr", "months": 84}, "New Facility||15": {"code": "Building - 15 yr", "months": 180}, "HVAC||7": {"code": "Building - 7 yr", "months": 84}, "Alarms||7": {"code": "Building - 7 yr", "months": 84}, "Sitework||7": {"code": "Building - 7 yr", "months": 84}, "Doors||7": {"code": "Building - 7 yr", "months": 84}, "Lighting||7": {"code": "Building - 7 yr", "months": 84}, "Metal Work||7": {"code": "Building - 7 yr", "months": 84}, "Building Concrete||39.5": {"code": "Building - Concrete", "months": null}, "Fleet Addition Forklift||Lease": {"code": "Forklift Lease", "months": null}, "Fleet Lifecycle Forklift||Lease": {"code": "Forklift Lease", "months": null}, "Fleet Addition Forklift||7": {"code": "Forklifts - 7 yr", "months": 84}, "Fleet Lifecycle Forklift||7": {"code": "Forklifts - 7 yr", "months": 84}, "Fleet Lifecycle Forklift||Lease 7": {"code": "Lease - Forklifts - 7 yr", "months": 84}, "Fleet Addition Forklift||Lease 7": {"code": "Lease - Forklifts - 7 yr", "months": 84}, "Fleet Lifecycle TMFL||Lease": {"code": "Forklift Lease", "months": null}, "Fleet Addition TMFL||Lease": {"code": "Forklift Lease", "months": null}, "Fleet Lifecycle TMFL||7": {"code": "Forklifts - 7 yr", "months": 84}, "Fleet Addition TMFL||7": {"code": "Forklifts - 7 yr", "months": 84}, "Fleet Lifecycle TMFL||Lease 7": {"code": "Lease - Forklifts - 7 yr", "months": 84}, "Fleet Addition TMFL||Lease 7": {"code": "Lease - Forklifts - 7 yr", "months": 84}, "Fleet Addition Tractor||Lease 5": {"code": "Lease - Trucks - 5 yr", "months": 60}, "Fleet Addition Medium Truck||Lease 5": {"code": "Lease - Trucks - 5 yr", "months": 60}, "Fleet Lifecycle Medium Truck||Lease 5": {"code": "Lease - Trucks - 5 yr", "months": 60}, "Fleet Lifecycle Light Duty Vehicle||Lease 5": {"code": "Lease - Trucks - 5 yr", "months": 60}, "Racking||7": {"code": "Racking - 7 yr", "months": 84}, "Racking Inspection||7": {"code": "Racking - 7 yr", "months": 84}, "Signage||5": {"code": "Signs & Fixtures - 5 yr", "months": 60}, "Fleet Addition Tractor||Lease": {"code": "Truck Lease", "months": null}, "Fleet Addition Medium Truck||Lease": {"code": "Truck Lease", "months": null}, "Fleet Lifecycle Tractor||Lease": {"code": "Truck Lease", "months": null}, "Fleet Lifecycle Medium Truck||Lease": {"code": "Truck Lease", "months": null}, "Fleet Addition Tractor||5": {"code": "Vehicle - 18 Wheeler - 5 yr", "months": 60}, "Fleet Addition Medium Truck||5": {"code": "Vehicle Heavy - > 13,000 - 5 yr", "months": 60}, "Fleet Addition Light Duty Vehicle||5": {"code": "Vehicle Light - < 13,000 - 5 yr", "months": 60}, "Fleet Lifecycle Tractor||5": {"code": "Vehicle - 18 Wheeler - 5 yr", "months": 60}, "Fleet Lifecycle Medium Truck||5": {"code": "Vehicle Heavy - > 13,000 - 5 yr", "months": 60}, "Fleet Lifecycle Light Duty Vehicle||5": {"code": "Vehicle Light - < 13,000 - 5 yr", "months": 60}, "Fleet Addition Light Duty Vehicle||Lease": {"code": "Auto Lease", "months": null}, "Fleet Lifecycle Light Duty Vehicle||Lease": {"code": "Auto Lease", "months": null}, "Roof||39.5": {"code": "Building - 39.5 yr", "months": 474}};
 
+// Project Type + Depreciation Schedule -> Supplier Code/Name (Code and Name are identical).
+const SUPPLIER_CROSSWALK = {"Fleet Addition Light Duty Vehicle||Lease": "LEIF JOHNSON FORD - 701169", "Fleet Lifecycle Light Duty Vehicle||Lease": "LEIF JOHNSON FORD - 701169", "Sitework||15": "BENNETT PAVING INC. - 706337", "Roof||15": "C&R SYSTEMS INC - 707806", "Metal Work||15": "REBEL CONSTRUCTION - 708108", "Metal Work||39.5": "REBEL CONSTRUCTION - 708108", "Interior Room Remodel||7": "REBEL CONSTRUCTION - 708108", "Interior Room Remodel||15": "REBEL CONSTRUCTION - 708108", "Interior Room Remodel||39.5": "REBEL CONSTRUCTION - 708108", "New Facility||39.5": "ALLEN TEINERT CONSTRUCTION CO. -", "New Facility||5": "ALLEN TEINERT CONSTRUCTION CO. -", "New Facility||7": "ALLEN TEINERT CONSTRUCTION CO. -", "New Facility||15": "ALLEN TEINERT CONSTRUCTION CO. -", "HVAC||7": "ACES A/C SUPPLY, INC. - 708432", "Alarms||7": "MARIO SALINAS DBA 1ST FP SERVICES LLC - 706130", "Sitework||7": "BENNETT PAVING INC. - 706337", "Doors||7": "ASSA ABLOY ENTRANCE SYSTEMS US INC -", "Lighting||7": "DVDLIGHTS, LLC -", "Metal Work||7": "REBEL CONSTRUCTION - 708108", "Building Concrete||39.5": "ALLEN TEINERT CONSTRUCTION CO. -", "Fleet Addition Forklift||Lease": "TOYOTA MOTOR CREDIT CORP. DBA TOYOTA FINANCIAL SERVICES - 710533", "Fleet Lifecycle Forklift||Lease": "TOYOTA MOTOR CREDIT CORP. DBA TOYOTA FINANCIAL SERVICES - 710533", "Fleet Addition Forklift||7": "DOGGET EQUIPMENT SERVICES LTD DBA TOYOTA LIFT OF SOUTH TEXAS - 704013", "Fleet Lifecycle Forklift||7": "DOGGET EQUIPMENT SERVICES LTD DBA TOYOTA LIFT OF SOUTH TEXAS - 704013", "Fleet Lifecycle Forklift||Lease 7": "TOYOTA MOTOR CREDIT CORP. DBA TOYOTA FINANCIAL SERVICES - 710533", "Fleet Addition Forklift||Lease 7": "TOYOTA MOTOR CREDIT CORP. DBA TOYOTA FINANCIAL SERVICES - 710533", "Fleet Lifecycle TMFL||Lease": "** JPMORGAN CHASE BANK, N.A. - 702247", "Fleet Addition TMFL||Lease": "** JPMORGAN CHASE BANK, N.A. - 702247", "Fleet Lifecycle TMFL||7": "DOGGET EQUIPMENT SERVICES LTD DBA TOYOTA LIFT OF SOUTH TEXAS - 704013", "Fleet Addition TMFL||7": "DOGGET EQUIPMENT SERVICES LTD DBA TOYOTA LIFT OF SOUTH TEXAS - 704013", "Fleet Lifecycle TMFL||Lease 7": "** JPMORGAN CHASE BANK, N.A. - 702247", "Fleet Addition TMFL||Lease 7": "** JPMORGAN CHASE BANK, N.A. - 702247", "Fleet Addition Tractor||Lease 5": "HOLT IDEALEASE - 702464", "Fleet Lifecycle Tractor||Lease 5": "HOLT IDEALEASE - 702464", "Fleet Addition Medium Truck||Lease 5": "HOLT IDEALEASE - 702464", "Fleet Lifecycle Medium Truck||Lease 5": "HOLT IDEALEASE - 702464", "Racking||7": "WTD HOLDINGS, INC DBA CT DARNELL CONSTRUCTION - 703556", "Racking Inspection||7": "WTD HOLDINGS, INC DBA CT DARNELL CONSTRUCTION - 703556", "Signage||5": "HIGHPOINT SIGNS & APPAREL - 701020", "Fleet Addition Tractor||Lease": "HOLT IDEALEASE - 702464", "Fleet Addition Medium Truck||Lease": "HOLT IDEALEASE - 702464", "Fleet Lifecycle Tractor||Lease": "HOLT IDEALEASE - 702464", "Fleet Lifecycle Medium Truck||Lease": "HOLT IDEALEASE - 702464", "Fleet Addition Tractor||5": "HOLT TRUCK CENTERS OF TEXAS LLC - 708463", "Fleet Addition Medium Truck||5": "HOLT TRUCK CENTERS OF TEXAS LLC - 708464", "Fleet Addition Light Duty Vehicle||5": "LEIF JOHNSON FORD - 701169", "Fleet Lifecycle Tractor||5": "HOLT TRUCK CENTERS OF TEXAS LLC - 708463", "Fleet Lifecycle Medium Truck||5": "HOLT TRUCK CENTERS OF TEXAS LLC - 708464", "Fleet Lifecycle Light Duty Vehicle||5": "LEIF JOHNSON FORD - 701169", "Roof||39.5": "C&R SYSTEMS INC - 707806"};
+
 // Fexa Store Identifier -> Adaptive Level Code (Code and Name are identical in Adaptive's Keys tab).
 // Most pass through unchanged; a handful (distribution centers, regions, a couple of stores) differ.
 const LEVEL_CODE_MAP = {"001 Galveston": "001 Galveston", "003 Brazoria": "003 Brazoria", "004 League City": "004 League City", "006 Bastrop": "006 Bastrop", "007 Brownwood": "007 Brownwood", "008 Stephenville": "008 Stephenville", "010 Belton": "010 Belton", "011 South Austin": "011 South Austin", "012 Weimar": "012 Weimar", "013 Richwood": "013 Richwood", "015 Harlingen": "015 Harlingen", "016 New Braunfels": "016 New Braunfels", "017 N Corpus Christi": "017 N Corpus Christi", "018 Abilene": "018 Abilene", "019 Midland": "019 Midland", "020 Victoria": "020 Victoria", "022 Greenville": "022 Greenville", "024 Pasadena": "024 Pasadena", "025 NW San Antonio": "025 NW San Antonio", "027 SE San Antonio": "027 SE San Antonio", "028 Baytown": "028 Baytown", "029 S Corpus Christi": "029 S Corpus Christi", "030 San Angelo": "030 San Angelo", "032 Palestine": "032 Palestine", "033 Pharr": "033 Pharr", "034 Bryan": "034 Bryan", "035 Odessa": "035 Odessa", "036 Lufkin": "036 Lufkin", "037 Brownsville": "037 Brownsville", "038 Rosenberg": "038 Rosenberg", "039 Longview": "039 Longview", "040 Beeville": "040 Beeville", "041 Laredo": "041 Laredo", "042 Las Cruces": "042 Las Cruces", "043 Huntsville": "043 Huntsville", "044 Kerrville": "044 Kerrville", "047 Waco": "047 Waco", "049 Tyler": "049 Tyler", "050 SC San Antonio": "050 SC San Antonio", "052 Cleburne": "052 Cleburne", "053 Taylor": "053 Taylor", "055 Georgetown": "055 Georgetown", "057 Tomball": "057 Tomball", "058 Gonzales": "058 Gonzales", "059 Corsicana": "059 Corsicana", "060 Brenham": "060 Brenham", "061 Mt. Pleasant": "061 Mt. Pleasant", "062 Austin Manchaca": "062 Austin Manchaca", "063 Gainesville": "063 Gainesville", "064 Orange": "064 Orange", "066 Alice": "066 Alice", "067 Terrell": "067 Terrell", "068 Plainview": "068 Plainview", "069 Austin 290 West": "069 Austin 290 West", "070 San Marcos": "070 San Marcos", "071 Nacogdoches": "071 Nacogdoches", "072 Paris": "072 Paris", "074 Bee Cave": "074 Bee Cave", "075 El Paso": "075 El Paso HP", "077 Searcy": "077 Searcy", "082 Ardmore": "082 Ardmore", "083 Duncan": "083 Duncan", "084 Hobbs": "084 Hobbs", "085 Roswell": "085 Roswell", "086 Alpine": "086 Alpine", "087 Fort Stockton": "087 Fort Stockton", "088 Del Rio": "088 Del Rio", "089 Mission": "089 Mission", "090 Okmulgee": "090 Okmulgee", "091 Carlsbad": "091 Carlsbad", "093 Weslaco": "093 Weslaco", "094 Vicksburg": "094 Vicksburg", "096 El Campo": "096 El Campo", "097 Eagle Pass": "097 Eagle Pass", "098 Cleveland": "098 Cleveland", "100 Edinburg": "100 Edinburg", "101 Universal City": "101 Universal City", "103 San Benito": "103 San Benito", "107 Laurel": "107 Laurel", "108 Rio Grande City": "108 Rio Grande City", "109 Aransas Pass": "109 Aransas Pass", "111 Floresville": "111 Floresville", "112 Dayton": "112 Dayton", "113 Montgomery": "113 Montgomery", "114 Alvin": "114 Alvin", "115 Midlothian": "115 Midlothian", "116 Bay City": "116 Bay City", "117 Liberty Hill": "117 Liberty Hill", "118 Spicewood": "118 Spicewood", "119 Lubbock": "119 Lubbock", "120 Lockhart": "120 Lockhart", "121 New Caney": "121 New Caney", "122 Canyon Lake": "122 Canyon Lake", "123 Reno": "750 Real Estate Division", "353 Dayton Distribution": "353 Dayton Distribution", "355 Pharr Central Delivery": "355 Centralized Delivery", "355 Pharr Reload": "355 Pharr - Reload", "356 Midland Distribution Center": "356 Midland - DC", "359 Burnet Reload": "359 Burnet Reload", "387 Window Delivery": "387 Region 7&8 Window Service", "450 McCoys Millworks": "450-New Braunfels Millwork", "479 Rebar Bender": "479 Burnet Manufacturing", "489 EWP Program": "489 Burnet EWP", "508 The Retreat": "508 Retreat", "730 Store Development": "730 Store Development Dept", "735 Fleet": "735 Fleet", "750 Real Estate": "750 Real Estate Division", "761 Region 1": "761 Region 01", "762 Region 2": "762 Region 02", "763 Region 3": "763 Region 03", "764 Region 4": "764 Region 04", "765 Region 5": "765 Region 05", "766 Region 6": "766 Region 06", "767 Region 7": "767 Region 07", "768 Region 8": "768 Region 08", "900 Corporate": "900 Corporate Department", "950 Rio Truss": "950 Rio Truss"};
@@ -715,6 +718,11 @@ function normCrosswalkKey(v){
 function lookupAssetClass(projectType, deprRaw){
   const key = `${normCrosswalkKey(projectType)}||${normCrosswalkKey(deprRaw)}`;
   return ASSET_CLASS_CROSSWALK[key] || null;
+}
+
+function lookupSupplier(projectType, deprRaw){
+  const key = `${normCrosswalkKey(projectType)}||${normCrosswalkKey(deprRaw)}`;
+  return SUPPLIER_CROSSWALK[key] || null;
 }
 
 function monthYearLabel(y, m){ return `${m}/1/${y}`; }
@@ -1536,6 +1544,7 @@ function buildAdaptiveRows(projects){
   const rows = [];
   const unmappedMap = new Map();
   const unmatchedLevelMap = new Map();
+  const unmappedSupplierMap = new Map();
   const exportedProjectIds = new Set();
   const versionInput = document.getElementById('budget-version-input');
   const version = versionInput && versionInput.value ? versionInput.value : '1';
@@ -1572,6 +1581,14 @@ function buildAdaptiveRows(projects){
     }
     const assetLifeMonths = match && match.months != null ? match.months : (p.deprYearsNum ? Math.round(p.deprYearsNum * 12) : '');
 
+    const supplier = lookupSupplier(p.type, p.deprYears);
+    if (!supplier){
+      const sKey = `${p.type} || ${p.deprLabel}`;
+      if (!unmappedSupplierMap.has(sKey)) unmappedSupplierMap.set(sKey, { type: p.type, depr: p.deprLabel, count: 0, budget: 0 });
+      const su = unmappedSupplierMap.get(sKey);
+      su.count++; su.budget += p.remainingBudget;
+    }
+
     months.forEach(mo => {
       const amt = Math.round(mo.amount * 100) / 100;
       rows.push({
@@ -1579,8 +1596,8 @@ function buildAdaptiveRows(projects){
         'Purchase Order Status': 'Draft',
         'PO Number': poNumberLabel,
         'Item (Label)': `${p.name} - Fexa Project ${p.projectId}`,
-        'Suppliers Name': '',
-        'Suppliers Code': '',
+        'Suppliers Name': supplier || '',
+        'Suppliers Code': supplier || '',
         'Purchase Order Line Due Date': monthYearLabel(mo.y, mo.m),
         'Purchase Order Due Date': poDueLabel,
         'In Service Date': inServiceLabel,
@@ -1596,7 +1613,8 @@ function buildAdaptiveRows(projects){
 
   const unmapped = Array.from(unmappedMap.values()).sort((a,b) => b.budget - a.budget);
   const unmatchedLevelCodes = Array.from(unmatchedLevelMap.values()).sort((a,b) => b.budget - a.budget);
-  return { rows, unmapped, unmatchedLevelCodes, projectCount: exportedProjectIds.size };
+  const unmappedSuppliers = Array.from(unmappedSupplierMap.values()).sort((a,b) => b.budget - a.budget);
+  return { rows, unmapped, unmatchedLevelCodes, unmappedSuppliers, projectCount: exportedProjectIds.size };
 }
 
 const FEXA_EXPORT_HEADERS = ['Project ID','Store Number','Store Identifier','Project Status','Store District',
@@ -1648,7 +1666,7 @@ function downloadAdjustedData(){
 }
 
 function downloadAdaptiveExport(){
-  const { rows, unmapped, unmatchedLevelCodes, projectCount } = buildAdaptiveRows(activeProjects());
+  const { rows, unmapped, unmatchedLevelCodes, unmappedSuppliers, projectCount } = buildAdaptiveRows(activeProjects());
   const banner = document.getElementById('export-banner');
 
   if (!rows.length){
@@ -1691,8 +1709,16 @@ function downloadAdaptiveExport(){
     html += ` ${unmapped.length} Project Type / Depreciation Schedule combination${unmapped.length===1?'':'s'} had no Asset Class match — exported with Asset_Class left blank:<ul>${list}${more}</ul>`;
   }
 
-  if (!unmatchedLevelCodes.length && !unmapped.length){
-    html += ` Every project matched both a Level Code and an Asset Class.`;
+  if (unmappedSuppliers.length){
+    const list = unmappedSuppliers.slice(0, 8).map(u =>
+      `<li>${u.type} / ${u.depr} — ${u.count} project${u.count===1?'':'s'}, ${fmtMoney(u.budget, {showZero:true})}</li>`
+    ).join('');
+    const more = unmappedSuppliers.length > 8 ? `<li>…and ${unmappedSuppliers.length - 8} more combination${unmappedSuppliers.length-8===1?'':'s'}</li>` : '';
+    html += ` ${unmappedSuppliers.length} Project Type / Depreciation Schedule combination${unmappedSuppliers.length===1?'':'s'} had no Supplier match — exported with Suppliers Name/Code left blank:<ul>${list}${more}</ul>`;
+  }
+
+  if (!unmatchedLevelCodes.length && !unmapped.length && !unmappedSuppliers.length){
+    html += ` Every project matched a Level Code, Asset Class, and Supplier.`;
   }
 
   banner.innerHTML = html;
