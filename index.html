@@ -3,28 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Capital Planning — Fleet, Facilities &amp; Construction</title>
+<title>McCoy's Building Supply — Capital Planning</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <style>
   :root{
-    --bg:#EDEADC;
+    --brand-green:#094836;  /* McCoy's logo green */
+    --brand-yellow:#FFE901; /* McCoy's logo yellow */
+    --bg:#F1F4EF;
     --surface:#FFFFFF;
-    --surface-2:#F2F1E4;
-    --ink:#16261C;
-    --steel:#55624F;
-    --steel-light:#8B9484;
-    --rule:#D2D2C0;
-    --rule-strong:#B6B8A2;
-    --accent:#1F6E3C;       /* Store Development - McCoy's green */
-    --accent-soft:#DCEEE1;
-    --fleet:#8A6D00;        /* Fleet - McCoy's gold (darkened for text contrast) */
-    --fleet-fill:#F2B705;   /* brighter gold for bars/borders, not used for text */
-    --fleet-soft:#FBF0CC;
+    --surface-2:#EAF0EA;
+    --ink:#0F2B22;
+    --steel:#4F5F57;
+    --steel-light:#86948B;
+    --rule:#D3DDD5;
+    --rule-strong:#B7C5BB;
+    --accent:#0C5F46;       /* Store Development - brand green, a touch lighter for data */
+    --accent-soft:#DCEBE3;
+    --fleet:#7A7000;        /* Fleet - brand yellow, darkened for text contrast */
+    --fleet-fill:#FFE901;   /* brand yellow for bars/borders/fills, not used for text */
+    --fleet-soft:#FFF9B8;
     --warn:#9C3B34;
     --warn-soft:#F3DEDA;
-    --focus-ring: #16261C;
+    --focus-ring:#094836;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -43,38 +45,39 @@
   /* ---------- Shell ---------- */
   .shell{ max-width:1440px; margin:0 auto; padding:28px 16px 80px; }
 
+  /* ---------- Brand header ---------- */
+  .brandbar{ background:var(--brand-green); border-top:4px solid var(--brand-yellow); }
+  .brandbar-inner{ max-width:1440px; margin:0 auto; padding:14px 16px 0; }
   .masthead{
-    display:flex; justify-content:space-between; align-items:flex-end;
-    gap:24px; flex-wrap:wrap;
-    padding-bottom:20px; border-bottom:2px solid var(--ink);
-    margin-bottom:0;
+    display:flex; justify-content:space-between; align-items:center;
+    gap:24px; flex-wrap:wrap; padding-bottom:14px;
   }
+  .brand-lockup{ display:flex; align-items:center; gap:20px; }
+  .brand-logo{ display:block; height:64px; width:auto; }
   .masthead h1{
-    font-size:26px; font-weight:700; margin:0 0 4px; letter-spacing:-0.01em;
+    font-size:24px; font-weight:700; margin:0 0 3px; letter-spacing:-0.01em; color:#FFFFFF;
   }
-  .masthead p{ margin:0; color:var(--steel); font-size:14px; max-width:52ch; }
+  .masthead p{ margin:0; color:rgba(255,255,255,0.78); font-size:13px; max-width:84ch; }
   .masthead .meta{
-    text-align:right; font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--steel);
+    text-align:right; font-family:'IBM Plex Mono', monospace; font-size:12px; color:rgba(255,255,255,0.78);
   }
   .masthead .meta .fy-select{
-    margin-top:6px; padding:5px 8px; border:1px solid var(--ink); background:var(--surface);
+    margin-top:6px; padding:5px 8px; border:1px solid var(--brand-yellow); background:rgba(255,255,255,0.08); color:#FFFFFF;
     font-family:'IBM Plex Mono', monospace; font-size:12px; cursor:pointer;
   }
+  .masthead .meta .fy-select option{ color:#111111; background:#FFFFFF; }
 
   /* ---------- Tabs ---------- */
-  .tabbar{
-    display:flex; gap:2px; border-bottom:1px solid var(--rule-strong); margin-bottom:24px;
-    overflow-x:auto;
-  }
+  .tabbar{ display:flex; gap:2px; overflow-x:auto; }
   .tabbar button{
     background:none; border:none; padding:12px 18px; cursor:pointer;
-    font-size:14px; font-weight:500; color:var(--steel);
-    border-bottom:3px solid transparent; margin-bottom:-1px;
+    font-size:14px; font-weight:500; color:rgba(255,255,255,0.72);
+    border-bottom:4px solid transparent;
     white-space:nowrap;
   }
-  .tabbar button:hover{ color:var(--ink); }
-  .tabbar button.active{ color:var(--ink); border-bottom-color:var(--accent); font-weight:600; }
-  .tabbar button:focus-visible{ outline:2px solid var(--focus-ring); outline-offset:2px; }
+  .tabbar button:hover{ color:#FFFFFF; }
+  .tabbar button.active{ color:#FFFFFF; border-bottom-color:var(--brand-yellow); font-weight:700; }
+  .tabbar button:focus-visible{ outline:2px solid var(--brand-yellow); outline-offset:-2px; }
 
   .view{ display:none; }
   .view.active{ display:block; }
@@ -91,14 +94,14 @@
   .databar .actions{ display:flex; gap:10px; align-items:center; }
   .btn{
     display:inline-flex; align-items:center; gap:6px;
-    background:var(--ink); color:var(--surface); border:1px solid var(--ink);
+    background:var(--brand-green); color:#FFFFFF; border:1px solid var(--brand-green);
     padding:7px 14px; font-size:12.5px; font-weight:500; cursor:pointer;
   }
-  .btn:hover{ background:#33404A; }
+  .btn:hover{ background:#0D5E47; }
   .btn.ghost{ background:none; color:var(--steel); border:1px solid var(--rule-strong); }
   .btn.ghost:hover{ color:var(--ink); border-color:var(--ink); }
-  .btn.adaptive{ background:var(--accent); border-color:var(--accent); color:#FFFFFF; font-weight:600; }
-  .btn.adaptive:hover{ background:#175A30; border-color:#175A30; }
+  .btn.adaptive{ background:var(--brand-yellow); border-color:var(--brand-yellow); color:var(--brand-green); font-weight:700; }
+  .btn.adaptive:hover{ background:#F0DA00; border-color:#F0DA00; }
   #csv-input{ display:none; }
 
   .banner{
@@ -107,7 +110,7 @@
   }
   .banner.show{ display:block; }
   .banner strong{ font-weight:600; }
-  .banner.info{ border-color:var(--accent); background:var(--accent-soft); color:#123B22; }
+  .banner.info{ border-color:var(--accent); background:var(--accent-soft); color:#0A3326; }
   .banner .banner-close{
     float:right; background:none; border:none; color:inherit; cursor:pointer;
     font-size:13px; font-weight:600; padding:0 0 0 12px; opacity:0.7;
@@ -156,7 +159,7 @@
   .type-row .type-figs{ font-family:'IBM Plex Mono', monospace; color:var(--steel); }
   .bar-track{ height:6px; background:var(--surface-2); display:flex; overflow:hidden; }
   .bar-fill{ height:100%; background:var(--accent); flex:none; }
-  .fleet .bar-fill{ background:var(--fleet-fill); }
+  .fleet .bar-fill{ background:var(--fleet-fill); box-shadow:inset 0 0 0 1px rgba(122,112,0,0.35); }
   .bar-fill.committed{ background:var(--warn); }
 
   /* ---------- Tables ---------- */
@@ -249,7 +252,7 @@
   }
   .chart-card svg{ width:100%; height:180px; display:block; overflow:visible; }
   .chart-bar{ fill:var(--accent); }
-  .chart-bar:hover{ fill:#175A30; }
+  .chart-bar:hover{ fill:var(--brand-green); }
   .chart-axis-label{ font-family:'IBM Plex Mono', monospace; font-size:10px; fill:var(--steel); }
   .chart-value-label{ font-family:'IBM Plex Mono', monospace; font-size:9.5px; fill:var(--steel); }
 
@@ -264,7 +267,7 @@
   .pie-card svg{ display:block; margin:0 auto 14px; width:150px; height:150px; }
   .pie-legend{ font-size:11.5px; }
   .pie-legend-row{ display:flex; align-items:center; gap:7px; padding:3px 0; }
-  .pie-legend-swatch{ width:9px; height:9px; flex:none; border-radius:2px; }
+  .pie-legend-swatch{ width:9px; height:9px; flex:none; border-radius:2px; box-shadow:inset 0 0 0 1px rgba(0,0,0,0.18); }
   .pie-legend-label{ flex:1; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .pie-legend-value{ font-family:'IBM Plex Mono', monospace; color:var(--steel); white-space:nowrap; }
   @media (max-width:820px){ .pie-grid{ grid-template-columns:1fr; } .pie-card:first-child{ border-right:none; border-bottom:1px solid var(--rule); } }
@@ -275,30 +278,72 @@
     .shell{ padding:16px 14px 60px; }
     .masthead{ flex-direction:column; align-items:flex-start; }
     .masthead .meta{ text-align:left; }
+    .brandbar-inner{ padding:12px 14px 0; }
+    .brand-lockup{ flex-direction:column; align-items:flex-start; gap:10px; }
     .kpi-row{ grid-template-columns:1fr 1fr; }
   }
+
+  /* ---------- Change log ---------- */
+  .cl-toolbar{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:0 0 20px; }
+  .cl-toolbar input[type=text]{
+    flex:1 1 340px; min-width:220px; padding:8px 10px; border:1px solid var(--rule-strong);
+    background:var(--surface); font-size:13px; color:var(--ink);
+  }
+  table.cl-table{ min-width:560px; }
+  table.cl-table th, table.cl-table td{ white-space:normal; vertical-align:top; }
+  table.cl-table thead th{ cursor:default; }
+  table.cl-table td.cl-amt{ text-align:right; font-family:'IBM Plex Mono', monospace; white-space:nowrap; }
+  table.cl-table td.cl-detail{ color:var(--steel); }
+  .cl-type{ display:inline-block; padding:2px 7px; font-size:11px; border:1px solid var(--rule-strong); white-space:nowrap; background:var(--surface); }
+  .cl-type.removed{ border-color:var(--warn); color:var(--warn); }
+  .cl-type.added{ border-color:var(--accent); color:var(--accent); font-weight:600; }
+  .cl-type.budget{ border-color:var(--fleet); color:var(--fleet); background:var(--fleet-soft); }
+  .cl-type.timing{ border-color:var(--steel); color:var(--steel); }
+  .cl-type.note{ border-color:var(--rule-strong); color:var(--steel); }
+  .cl-entry{ background:var(--surface); border:1px solid var(--rule); margin-bottom:12px; }
+  .cl-entry > summary{
+    list-style:none; cursor:pointer; padding:12px 16px; display:flex; flex-wrap:wrap; gap:6px 18px; align-items:baseline;
+    border-left:4px solid var(--brand-yellow);
+  }
+  .cl-entry > summary::-webkit-details-marker{ display:none; }
+  .cl-entry > summary::before{ content:'▸'; color:var(--steel); width:12px; display:inline-block; }
+  .cl-entry[open] > summary::before{ content:'▾'; }
+  .cl-date{ font-family:'IBM Plex Mono', monospace; font-size:12px; font-weight:600; }
+  .cl-title{ font-weight:600; font-size:14px; }
+  .cl-stats{ font-size:11.5px; color:var(--steel); font-family:'IBM Plex Mono', monospace; }
+  .cl-total{ margin-left:auto; font-size:11.5px; color:var(--steel); font-family:'IBM Plex Mono', monospace; }
+  .cl-entry .table-wrap{ margin:0; border:none; border-top:1px solid var(--rule); }
 </style>
 </head>
 <body>
+<header class="brandbar">
+  <div class="brandbar-inner">
+    <div class="masthead">
+      <div class="brand-lockup">
+        <img class="brand-logo" src="data:image/png;base64,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" alt="McCoy's Building Supply">
+        <div>
+          <h1>Capital Planning</h1>
+          <p>Store-level CAPEX candidates across Fleet, Facilities and Construction, with monthly cash flow and straight-line depreciation impact for the current budget year.</p>
+        </div>
+      </div>
+      <div class="meta">
+        <div>Budget year</div>
+        <select id="fy-select" class="fy-select"></select>
+      </div>
+    </div>
+
+    <nav class="tabbar" id="tabbar">
+      <button data-view="summary" class="active">Summary</button>
+      <button data-view="detail">Project Detail</button>
+      <button data-view="cashflow">Cash Flow</button>
+      <button data-view="depreciation">Depreciation</button>
+      <button data-view="changelog">Change Log</button>
+    </nav>
+  </div>
+</header>
+
 <div class="shell">
 
-  <div class="masthead">
-    <div>
-      <h1>Capital Planning</h1>
-      <p>Store-level CAPEX candidates across Fleet, Facilities and Construction, with monthly cash flow and straight-line depreciation impact for the current budget year.</p>
-    </div>
-    <div class="meta">
-      <div>Budget year</div>
-      <select id="fy-select" class="fy-select"></select>
-    </div>
-  </div>
-
-  <nav class="tabbar" id="tabbar">
-    <button data-view="summary" class="active">Summary</button>
-    <button data-view="detail">Project Detail</button>
-    <button data-view="cashflow">Cash Flow</button>
-    <button data-view="depreciation">Depreciation</button>
-  </nav>
 
   <div class="databar">
     <div class="status">
@@ -441,6 +486,23 @@
     <div class="table-wrap"><table id="dep-detail-table"></table></div>
   </section>
 
+  <!-- ===================== CHANGE LOG ===================== -->
+  <section class="view" id="view-changelog">
+    <div class="section-head" style="margin-top:0;"><h2>Change log</h2><span class="count" id="cl-count"></span></div>
+    <p class="table-note">A running record of what has moved during the budget process. Live edits made on Project Detail (start-month moves, removals, restores) are captured below automatically as you make them, and reset if the page is reloaded, so download the log to keep them. Each new Fexa file is added to the update history below.</p>
+    <div class="cl-toolbar">
+      <input type="text" id="cl-note-input" placeholder="Add a note, for example: Exec team asked to hold Springtown start to June" maxlength="240">
+      <button class="btn ghost" id="cl-note-btn">Add note</button>
+      <button class="btn adaptive" id="cl-download-btn">Download change log</button>
+    </div>
+
+    <div class="section-head"><h2>This session</h2><span class="count" id="cl-session-count"></span></div>
+    <div class="table-wrap"><table id="cl-session-table" class="cl-table"></table></div>
+
+    <div class="section-head"><h2>Update history</h2></div>
+    <div id="cl-history"></div>
+  </section>
+
   <footer class="note">
     Built from a Fexa Projects export / prior-year budget workbook. Reload a full export at any time with <strong>Load CSV export</strong> — column headers are matched automatically.
   </footer>
@@ -472,6 +534,9 @@ const DEFAULT_FILTERS = {
   dep:    { region:'All', type:'All', dept:'All', status:'All' },
 };
 
+// Change log: one entry per Fexa file / meeting, newest first. Totals per entry are computed from the items.
+const CHANGE_LOG = [{"date": "After 10/17/2026", "title": "Latest Fexa update", "projectsAfter": 122, "overallAfter": 29314371, "items": [{"type": "Removed", "project": "450 Millworks - Roof Seal", "amount": -600000, "detail": "Gaco roof seal for standing seam roof at end of life"}, {"type": "Removed", "project": "027 SE San Antonio - Sitework - Asphalt Repairs", "amount": -107000, "detail": "Asphalt yard and parking lot repairs"}, {"type": "Removed", "project": "387 Window Delivery - Fleet Lifecycle", "amount": -55000, "detail": "Lifecycle replacement, pickup"}, {"type": "Removed", "project": "763 Region 3 - Window Tech - Fleet Lifecycle", "amount": -55000, "detail": "Lifecycle replacement, pickup"}, {"type": "Removed", "project": "359 Burnet - Sitework", "amount": -60890.63, "detail": "Store request for a permanent fix to divots in the high-traffic yard areas shared by Divisions 359 and 489"}, {"type": "Budget change", "project": "355 Pharr Distribution - Sitework - Concrete Repairs", "amount": -83000, "detail": "$150,000 to $67,000 - concrete repairs, area on west side of yard"}, {"type": "Timing moved", "project": "040 Beeville - Signage Upgrade", "amount": null, "detail": "May to Jul 2027 ($12,000)"}, {"type": "Timing moved", "project": "029 S Corpus - Signage Upgrade", "amount": null, "detail": "Mar to Jun 2027 ($50,000)"}, {"type": "Timing moved", "project": "071 Nacogdoches - Signage Upgrade", "amount": null, "detail": "Apr to Aug 2027 ($55,000)"}, {"type": "Timing moved", "project": "041 Laredo - Signage Upgrade", "amount": null, "detail": "Mar to Jul 2027 ($12,000)"}, {"type": "Timing moved", "project": "066 Alice - Signage Upgrade", "amount": null, "detail": "Apr to Aug 2027 ($55,000)"}, {"type": "Timing moved", "project": "109 Aransas Pass - Signage Upgrade", "amount": null, "detail": "Apr to Aug 2027 ($12,000)"}, {"type": "Timing moved", "project": "020 Victoria - Signage Upgrade", "amount": null, "detail": "May to Jun 2027 ($12,000)"}, {"type": "Timing moved", "project": "011 S. Austin - Signage Upgrade", "amount": null, "detail": "Mar to Jun 2027 ($12,000)"}, {"type": "Timing moved", "project": "097 Eagle Pass - Signage Upgrade", "amount": null, "detail": "Apr to Aug 2027 ($19,000)"}, {"type": "Timing moved", "project": "049 Tyler - Signage Upgrade", "amount": null, "detail": "May to Jul 2027 ($12,000)"}]}, {"date": "10/17/2026", "title": "Revision effective 10/17", "projectsAfter": 127, "overallAfter": 30275261, "items": [{"type": "Added", "project": "039 Longview - Sitework - Asphalt Repairs", "amount": 60890.63, "detail": "Asphalt patches and repairs; budget will vary based on scope and approved total"}, {"type": "Added", "project": "359 Burnet - Sitework", "amount": 60890.63, "detail": "Store request for a permanent fix to yard divots"}, {"type": "Removed", "project": "122 Canyon Lake - Fleet Addition (truck mounted forklift)", "amount": -82000, "detail": "Truck mounted forklift"}, {"type": "Budget change", "project": "122 Canyon Lake - Fleet Addition (medium truck)", "amount": -185000, "detail": "$280,000 to $95,000 - 24' TA flatbed removed; 20' slide remains"}, {"type": "Note", "project": "Store rename: 123 Reno to 123 Springtown", "amount": null, "detail": "Level Code temporarily 750 Real Estate Division until Accounting sets it up"}]}, {"date": "9/25/2026", "title": "Revision effective 9/25", "projectsAfter": 126, "overallAfter": 30420480, "items": [{"type": "Added", "project": "730 Store Development - Contingency", "amount": 2000000, "detail": "Contingency"}, {"type": "Added", "project": "730 Store Development - Racking Repair Inventory", "amount": 75000, "detail": "Racking repair inventory"}, {"type": "Added", "project": "029 S Corpus - Signage Upgrade", "amount": 50000, "detail": "Signage upgrade"}, {"type": "Added", "project": "071 Nacogdoches - Signage Upgrade", "amount": 55000, "detail": "Signage upgrade"}, {"type": "Added", "project": "041 Laredo - Signage Upgrade", "amount": 12000, "detail": "Signage upgrade"}, {"type": "Added", "project": "066 Alice - Signage Upgrade", "amount": 55000, "detail": "Signage upgrade"}, {"type": "Added", "project": "109 Aransas Pass - Signage Upgrade", "amount": 12000, "detail": "Signage upgrade"}, {"type": "Added", "project": "020 Victoria - Signage Upgrade", "amount": 12000, "detail": "Signage upgrade"}, {"type": "Added", "project": "116 Bay City - Signage Upgrade", "amount": 19000, "detail": "Signage upgrade"}, {"type": "Added", "project": "011 S. Austin - Signage Upgrade", "amount": 12000, "detail": "Signage upgrade"}, {"type": "Added", "project": "097 Eagle Pass - Signage Upgrade", "amount": 19000, "detail": "Signage upgrade"}, {"type": "Added", "project": "049 Tyler - Signage Upgrade", "amount": 12000, "detail": "Signage upgrade"}, {"type": "Budget change", "project": "040 Beeville - Signage Upgrade", "amount": -18000, "detail": "$30,000 to $12,000 - narrowed to the pylon sign (10.1 years old)"}]}, {"date": "9/24/2026", "title": "Budget meeting update", "projectsAfter": 114, "overallAfter": 28105480, "items": [{"type": "Removed", "project": "008 Stephenville - Sitework - Concrete Repairs", "amount": -60000, "detail": "Concrete repairs, cracking at joints"}, {"type": "Removed", "project": "040 Beeville - Replace Damaged R-Panel", "amount": -62000, "detail": "Repair doors and front of warehouse"}, {"type": "Removed", "project": "057 Tomball - Racking Inspection", "amount": -80000, "detail": "Auto-stack pigeonhole racking found damaged; recommending replacement with rack-supported T-shed"}, {"type": "Removed", "project": "057 Tomball - Cantilever Racking", "amount": -170000, "detail": "150 LF cantilever rack ($120,000) plus mezzanine rack between bays 2 and 3 ($50,000)"}, {"type": "Removed", "project": "007 Brownwood - Sitework - Drainage Plan", "amount": -200000, "detail": "Budget would vary on scope and approved total; will get a quote for minor paving repairs"}, {"type": "Removed", "project": "011 South Austin - Sitework - Asphalt Repairs", "amount": -30000, "detail": "Store visit observations and recommendations"}, {"type": "Removed", "project": "024 Pasadena - Ceiling Insulation", "amount": -125000, "detail": ""}, {"type": "Removed", "project": "032 Palestine - Warehouse Metal", "amount": -90000, "detail": "Reskin warehouse"}, {"type": "Removed", "project": "072 Paris - Ceiling Insulation", "amount": -125000, "detail": ""}, {"type": "Removed", "project": "037 Brownsville - Restroom Remodel", "amount": -50000, "detail": "Moved to refresh, down from full remodel"}, {"type": "Removed", "project": "007 Brownwood - Racking Request", "amount": -180000, "detail": "200 LF single-sided cantilever rack"}, {"type": "Removed", "project": "359 Burnet - Parking Lot Striping", "amount": -40100, "detail": "Striping, pressure washing, trailer space markings; removed from the budget meeting"}, {"type": "Removed", "project": "037 Brownsville - Sitework - Asphalt Repairs", "amount": -300000, "detail": "Yard and parking lot; sticking with minor repairs set for 2026"}, {"type": "Removed", "project": "055 Georgetown - Lifecycle Replacements", "amount": -45000, "detail": "(3) front sliding doors"}, {"type": "Removed", "project": "062 Austin Manchaca - Lifecycle Replacements", "amount": -30000, "detail": "(2) front sliding doors"}, {"type": "Removed", "project": "082 Ardmore - Cantilever Racking", "amount": -120000, "detail": "150 LF single-sided"}, {"type": "Removed", "project": "074 Bee Cave - Lifecycle Replacements", "amount": -30000, "detail": "(2) front sliding doors, aged 19.16 years"}, {"type": "Removed", "project": "082 Ardmore - Ceiling Insulation", "amount": -110000, "detail": ""}, {"type": "Removed", "project": "096 El Campo - Lifecycle Replacements", "amount": -30000, "detail": "(2) front sliding doors, aged 19.16 years"}, {"type": "Removed", "project": "101 Universal City - Lifecycle Replacements", "amount": -30000, "detail": "(2) front sliding doors, aged 19.16 years"}, {"type": "Added", "project": "122 Canyon Lake - Fleet Addition", "amount": 199000, "detail": "(3) 6K yard forklifts + 8K yard forklift"}, {"type": "Added", "project": "122 Canyon Lake - Fleet Addition", "amount": 55000, "detail": "Pickup"}, {"type": "Added", "project": "122 Canyon Lake - Fleet Addition", "amount": 280000, "detail": "24' TA flatbed + 20' slide"}, {"type": "Added", "project": "122 Canyon Lake - Fleet Addition", "amount": 82000, "detail": "Truck mounted forklift"}, {"type": "Added", "project": "123 Springtown (formerly Reno) - Fleet Addition", "amount": 199000, "detail": "(3) 6K yard forklifts + 8K yard forklift"}, {"type": "Added", "project": "123 Springtown (formerly Reno) - Fleet Addition", "amount": 55000, "detail": "Pickup"}, {"type": "Added", "project": "123 Springtown (formerly Reno) - Fleet Addition", "amount": 465000, "detail": "(2) 24' TA flatbeds + 20' slide"}, {"type": "Added", "project": "123 Springtown (formerly Reno) - Fleet Addition", "amount": 164000, "detail": "(2) truck mounted forklifts"}, {"type": "Added", "project": "115 Midlothian - Sitework - Site Erosion", "amount": 10059.13, "detail": "Repairing erosion on the west side of the sales building"}, {"type": "Budget change", "project": "071 Nacogdoches - Racking Request", "amount": -95750, "detail": "$200,750 to $105,000 - 130 LF instead of 230 LF"}, {"type": "Budget change", "project": "071 Nacogdoches - Sitework - Asphalt Repairs", "amount": -44500, "detail": "$104,500 to $60,000 - parking lot repairs only, striping line removed"}, {"type": "Budget change", "project": "355 Pharr Distribution - Sitework - Concrete Repairs", "amount": -125000, "detail": "$275,000 to $150,000 - Leeland and Calros to visit the following week"}, {"type": "Budget change", "project": "038 Rosenberg - Sitework - Concrete Repairs", "amount": -5000, "detail": "$15,000 to $10,000 - 464 ft, reduced estimate"}, {"type": "Budget change", "project": "061 Mount Pleasant - Sitework", "amount": -355000, "detail": "$405,000 to $50,000 - rescoped from Parking Lot (new asphalt + repairs) to Failing Concrete (concrete area between pole sheds)"}, {"type": "Budget change", "project": "001 Galveston - Sitework - Parking Lot", "amount": -85000, "detail": "$145,000 to $60,000 - rescoped from new asphalt paving to minor repairs, sealcoat and stripe"}, {"type": "Budget change", "project": "037 Brownsville - Warehouse Doors and Reskin", "amount": 180000, "detail": "$135,000 to $315,000 - scope expanded to include reskinning the sales building"}, {"type": "Budget change", "project": "096 El Campo - Cantilever Racking", "amount": 10000, "detail": "$90,000 to $100,000"}]}];
+
 let state = {
   projects: [],
   sourceLabel: 'Sample data',
@@ -481,7 +546,8 @@ let state = {
     cf:     { ...DEFAULT_FILTERS.cf },
     dep:    { ...DEFAULT_FILTERS.dep },
   },
-  sort: { detail: { key:'storeIdentifier', dir:'asc' } }
+  sort: { detail: { key:'storeIdentifier', dir:'asc' } },
+  sessionLog: []
 };
 
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -646,25 +712,40 @@ function updateProjectStartMonth(projectId, newYM){
   const { y: oldY, m: oldM } = parseYM(p.startDate);
   const deltaMonths = (newY * 12 + (newM - 1)) - (oldY * 12 + (oldM - 1));
   if (!deltaMonths) return;
+  const fy = state.fiscalYear;
+  const before = projectYearBudget(p, fy);
+  const oldStart = p.startDate, oldComp = p.completionDate;
   p.startDate = shiftDateByMonths(p.startDate, deltaMonths);
   if (p.completionDate) p.completionDate = shiftDateByMonths(p.completionDate, deltaMonths);
   p._edited = true;
+  const after = projectYearBudget(p, fy);
+  logSession('Start moved', p, p._removed ? 0 : after - before,
+    `Start ${fmtMonthYear(oldStart)} to ${fmtMonthYear(p.startDate)}; completion ${fmtMonthYear(oldComp)} to ${fmtMonthYear(p.completionDate)}`);
   applyEditAndRerender();
 }
 
 function resetProjectDates(projectId){
   const p = state.projects.find(pr => pr.projectId === projectId);
   if (!p) return;
+  const fy = state.fiscalYear;
+  const before = projectYearBudget(p, fy);
   p.startDate = p._originalStartDate;
   p.completionDate = p._originalCompletionDate;
   p._edited = false;
+  const after = projectYearBudget(p, fy);
+  logSession('Dates reset', p, p._removed ? 0 : after - before,
+    `Back to the imported dates: start ${fmtMonthYear(p.startDate)}, completion ${fmtMonthYear(p.completionDate)}`);
   applyEditAndRerender();
 }
 
 function toggleProjectRemoved(projectId){
   const p = state.projects.find(pr => pr.projectId === projectId);
   if (!p) return;
+  const fy = state.fiscalYear;
+  const yb = projectYearBudget(p, fy);
   p._removed = !p._removed;
+  logSession(p._removed ? 'Removed' : 'Restored', p, p._removed ? -yb : yb,
+    p._removed ? `Taken out of the ${fy} budget` : `Put back in the ${fy} budget`);
   applyEditAndRerender();
 }
 
@@ -1207,8 +1288,8 @@ function monthColumnsForYear(year){
 
 function heatColor(t){
   // Interpolates from a light neutral background to the accent green as t goes 0 -> 1.
-  const light = [242, 241, 228];   // --surface-2
-  const dark  = [31, 110, 60];     // --accent
+  const light = [234, 240, 234];   // --surface-2
+  const dark  = [12, 95, 70];      // --accent
   const eased = Math.pow(Math.max(0, Math.min(1, t)), 0.55); // perceptual boost for smaller values
   const rgb = light.map((c, i) => Math.round(c + (dark[i] - c) * eased));
   return { bg: `rgb(${rgb.join(',')})`, textLight: eased > 0.55 };
@@ -1742,6 +1823,138 @@ function downloadAdaptiveExport(){
 }
 
 /* =========================================================================
+   CHANGE LOG
+   ========================================================================= */
+function escHtml(s){
+  return String(s === null || s === undefined ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function fmtMonthYear(iso){
+  if (!iso) return '-';
+  const [y, m] = iso.split('-');
+  return `${MONTHS[Number(m) - 1]} ${y}`;
+}
+
+function clFmtAmt(n){
+  if (n === null || n === undefined) return '—';
+  const r = Math.round(n);
+  if (r === 0) return '$0';
+  return (r < 0 ? '-' : '+') + '$' + Math.abs(r).toLocaleString('en-US');
+}
+
+const CL_TYPE_ORDER = ['Removed', 'Added', 'Budget change', 'Timing moved', 'Note'];
+const CL_TYPE_CLASS = {
+  'Removed':'removed', 'Added':'added', 'Budget change':'budget', 'Timing moved':'timing', 'Note':'note',
+  'Restored':'added', 'Start moved':'timing', 'Dates reset':'timing', 'Data loaded':'note'
+};
+
+function clSortedItems(entry){
+  return [...entry.items].sort((a, b) => CL_TYPE_ORDER.indexOf(a.type) - CL_TYPE_ORDER.indexOf(b.type));
+}
+
+function logSession(type, p, impact, detail){
+  state.sessionLog.push({
+    time: new Date(),
+    type,
+    project: p ? String(p.name || '').replace(/\s+/g, ' ').trim() : '',
+    impact: (impact === undefined ? null : impact),
+    detail: detail || ''
+  });
+}
+
+function renderChangeLog(){
+  const fy = state.fiscalYear;
+  const itemCount = CHANGE_LOG.reduce((s, e) => s + e.items.length, 0);
+  document.getElementById('cl-count').textContent = `${CHANGE_LOG.length} updates logged · ${itemCount} items`;
+
+  // --- This session (live edits), newest first ---
+  const log = state.sessionLog;
+  document.getElementById('cl-session-count').textContent = log.length ? `${log.length} entr${log.length === 1 ? 'y' : 'ies'}` : '';
+  const sTable = document.getElementById('cl-session-table');
+  if (!log.length){
+    sTable.innerHTML = `<tbody><tr><td><div class="empty-state">No live edits yet. Moving a start month or removing a project on Project Detail is logged here automatically.</div></td></tr></tbody>`;
+  } else {
+    sTable.innerHTML = `
+      <thead><tr><th>Time</th><th>Type</th><th>Project</th><th class="num">${escHtml(fy)} impact</th><th>Detail</th></tr></thead>
+      <tbody>${[...log].reverse().map(e => `
+        <tr>
+          <td style="white-space:nowrap;">${escHtml(e.time.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' }))}</td>
+          <td><span class="cl-type ${CL_TYPE_CLASS[e.type] || 'note'}">${escHtml(e.type)}</span></td>
+          <td>${escHtml(e.project) || '—'}</td>
+          <td class="cl-amt">${clFmtAmt(e.impact)}</td>
+          <td class="cl-detail">${escHtml(e.detail)}</td>
+        </tr>`).join('')}
+      </tbody>`;
+  }
+
+  // --- Update history (embedded), newest first ---
+  document.getElementById('cl-history').innerHTML = CHANGE_LOG.map((entry, idx) => {
+    const by = t => entry.items.filter(i => i.type === t);
+    const sum = arr => arr.reduce((s, i) => s + (i.amount || 0), 0);
+    const rem = by('Removed'), add = by('Added'), bud = by('Budget change'), tim = by('Timing moved');
+    const stats = [
+      rem.length && `Removed ${rem.length} (${clFmtAmt(sum(rem))})`,
+      add.length && `Added ${add.length} (${clFmtAmt(sum(add))})`,
+      bud.length && `Budget changes ${bud.length} (net ${clFmtAmt(sum(bud))})`,
+      tim.length && `Timing moved ${tim.length}`
+    ].filter(Boolean).join(' · ');
+    const total = entry.overallAfter ? `${entry.projectsAfter} projects · overall ${fy} CAPEX after: ${fmtMoney(entry.overallAfter, {showZero:true})}` : '';
+    return `
+      <details class="cl-entry" ${idx === 0 ? 'open' : ''}>
+        <summary>
+          <span class="cl-date">${escHtml(entry.date)}</span>
+          <span class="cl-title">${escHtml(entry.title)}</span>
+          <span class="cl-stats">${escHtml(stats)}</span>
+          <span class="cl-total">${escHtml(total)}</span>
+        </summary>
+        <div class="table-wrap"><table class="cl-table">
+          <thead><tr><th>Type</th><th>Project</th><th class="num">Change</th><th>Detail</th></tr></thead>
+          <tbody>${clSortedItems(entry).map(i => `
+            <tr>
+              <td><span class="cl-type ${CL_TYPE_CLASS[i.type] || 'note'}">${escHtml(i.type)}</span></td>
+              <td>${escHtml(i.project)}</td>
+              <td class="cl-amt">${clFmtAmt(i.amount)}</td>
+              <td class="cl-detail">${escHtml(i.detail)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table></div>
+      </details>`;
+  }).join('');
+}
+
+function addSessionNote(){
+  const input = document.getElementById('cl-note-input');
+  const text = (input.value || '').trim();
+  if (!text) return;
+  logSession('Note', null, null, text);
+  input.value = '';
+  renderChangeLog();
+}
+
+function downloadChangeLog(){
+  const headers = ['Date', 'Update', 'Type', 'Project', 'Change ($)', 'Detail'];
+  const money = n => (n === null || n === undefined) ? '' : Math.round(n);
+  const rows = [];
+  state.sessionLog.forEach(e => rows.push([
+    e.time.toLocaleString('en-US'), 'Live edit (this session)', e.type, e.project, money(e.impact), e.detail
+  ]));
+  CHANGE_LOG.forEach(entry => clSortedItems(entry).forEach(i => rows.push([
+    entry.date, entry.title, i.type, i.project, money(i.amount), i.detail || ''
+  ])));
+  const csv = Papa.unparse({ fields: headers, data: rows });
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `change_log_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* =========================================================================
    TOP-LEVEL RENDER / INIT
    ========================================================================= */
 function renderAll(){
@@ -1751,6 +1964,7 @@ function renderAll(){
   renderDetailTable();
   renderCashFlow();
   renderDepreciation();
+  renderChangeLog();
 }
 
 function setFiscalYearOptions(){
@@ -1818,6 +2032,8 @@ document.getElementById('csv-input').addEventListener('change', e => {
         return;
       }
       loadProjects(projects, file.name);
+      logSession('Data loaded', null, null, `Loaded ${file.name} (${projects.length} projects). Earlier in-tool edits no longer apply.`);
+      renderChangeLog();
     } catch(err){
       alert('Could not parse that file: ' + err.message);
     }
@@ -1825,7 +2041,14 @@ document.getElementById('csv-input').addEventListener('change', e => {
   reader.readAsText(file);
   e.target.value = '';
 });
-document.getElementById('reset-btn').addEventListener('click', () => loadProjects(SAMPLE_DATA, 'Sample data'));
+document.getElementById('reset-btn').addEventListener('click', () => {
+  loadProjects(SAMPLE_DATA, 'Sample data');
+  logSession('Data loaded', null, null, 'Reset to the built-in data. Earlier in-tool edits no longer apply.');
+  renderChangeLog();
+});
+document.getElementById('cl-note-btn').addEventListener('click', addSessionNote);
+document.getElementById('cl-note-input').addEventListener('keydown', e => { if (e.key === 'Enter') addSessionNote(); });
+document.getElementById('cl-download-btn').addEventListener('click', downloadChangeLog);
 document.getElementById('adaptive-export-btn').addEventListener('click', downloadAdaptiveExport);
 document.getElementById('download-adjusted-btn').addEventListener('click', downloadAdjustedData);
 
